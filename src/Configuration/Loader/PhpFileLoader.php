@@ -11,9 +11,10 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Configuration;
+namespace Dobee\Configuration\Loader;
 
 use Dobee\Configuration\ConfigurationFileNotFoundException;
+use Dobee\Configuration\LoaderAbstract;
 
 class PhpFileLoader extends LoaderAbstract
 {
