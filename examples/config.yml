@@ -1,0 +1,18 @@
+database:
+    default_connection: read
+    write:
+        host: localhost
+        user: root
+        pwd: 123456
+        port: 3306
+        charset: utf-8
+        dbname: test
+    read:
+        host: localhost
+        user: root
+        pwd: 123456
+        port: 3306
+        charset: utf-8
+        dbname: test
+template_engine:
+    path: %template%
