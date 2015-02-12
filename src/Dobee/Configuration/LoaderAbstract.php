@@ -17,24 +17,31 @@ use Dobee\Configuration\ConfigLoaderInterface;
 
 abstract class LoaderAbstract implements ConfigLoaderInterface
 {
-    private $options = array();
+    private $parameters = array();
 
     public function __construct($resource = null)
     {
-        if (null !== $resource && method_exists($this, 'load')) {
-            $this->load($resource);
-        }
+        $this->load($resource);
     }
 
-    public function setOptions(array $options = array())
+    public function load($resource = null)
     {
-        $this->options = $options;
+        if (!file_exists($resource)) {
+            throw new ConfigurationFileNotFoundException(sprintf('%s\' is not found.', $resource));
+        }
+
+        return $this->setParameters($this->parser($resource));
+    }
+
+    public function setParameters(array $parameters = array())
+    {
+        $this->parameters = $parameters;
 
         return $this;
     }
 
-    public function getOptions($name = null)
+    public function getParameters($name = null)
     {
-        return $this->options;
+        return $this->parameters;
     }
  }

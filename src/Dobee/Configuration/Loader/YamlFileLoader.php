@@ -50,7 +50,7 @@ class YamlFileLoader extends LoaderAbstract
             $resource[$key] = rtrim ($value, "\r");
         }
 
-        $this->setOptions($this->parser($resource));
+        $this->setParameters($this->parser($resource));
 
         return $this;
     }

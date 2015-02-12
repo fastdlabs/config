@@ -20,15 +20,6 @@ class IniFileLoader extends LoaderAbstract
 {
     public function parser($resource = null)
     {
-        if (!file_exists($resource)) {
-            throw new ConfigurationFileNotFoundException(sprintf('%s\' is not found.', $resource));
-        }
-
-        return $this->setOptions(parse_ini_file($resource, true));
-    }
-
-    public function load($resource = null)
-    {
-        return $this->parser($resource);
+        return parse_ini_file($resource, true);
     }
 }

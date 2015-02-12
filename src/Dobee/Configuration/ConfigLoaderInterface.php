@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 15/1/30
- * Time: 下午10:17
+ * Date: 15/2/4
+ * Time: 下午7:11
  * Github: https://www.github.com/janhuang 
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -13,14 +13,9 @@
 
 namespace Dobee\Configuration;
 
-interface ParserInterface
+interface ConfigLoaderInterface extends ParserInterface
 {
-    public function parser($resource = null);
+    public function load($resource = null);
 
-    public function setOptions(array $options = null);
-
-    /**
-     * @return array
-     */
-    public function getOptions();
+    public function getParameters($name = null);
 }

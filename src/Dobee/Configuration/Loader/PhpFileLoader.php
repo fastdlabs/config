@@ -18,15 +18,6 @@ use Dobee\Configuration\LoaderAbstract;
 
 class PhpFileLoader extends LoaderAbstract
 {
-    public function load($resource = null)
-    {
-        if (!file_exists($resource)) {
-            throw new ConfigurationFileNotFoundException(sprintf('%s\' is not found.', $resource));
-        }
-
-        return $this->setOptions($this->parser($resource));
-    }
-
     public function parser($resource = null)
     {
         return include $resource;
