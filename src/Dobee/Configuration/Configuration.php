@@ -170,6 +170,7 @@ class Configuration
             if (!isset($parameters[$value])) {
                 throw new \InvalidArgumentException(sprintf('%s\' is undefined.', $name));
             }
+
             $parameters = $parameters[$value];
         }
 

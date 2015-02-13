@@ -14,10 +14,12 @@
 $composer = include __DIR__ . '/../vendor/autoload.php';
 
 use Dobee\Configuration\Configuration;
+use Dobee\Configuration\Loader\YamlFileLoader;
 
 $config = Configuration::createConfigurationLoader();
 
 $config->load(__DIR__ . '/config.yml');
+$config->addLoader(new YamlFileLoader(__DIR__ . '/config2.yml'));
 
 echo '<pre>';
 print_r($config);

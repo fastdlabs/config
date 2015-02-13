@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Dobee\\Configuration\\": "src/Configuration"
+            "Dobee\\": "src/Dobee"
         }
     }
 }
