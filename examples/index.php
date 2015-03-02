@@ -21,8 +21,6 @@ $config = Configuration::createConfigurationLoader();
 $config->load(__DIR__ . '/config.yml');
 //$config->addLoader(new YamlFileLoader(__DIR__ . '/config2.yml'));
 
-
-
 $config->setVariable('template', __DIR__);
 $config->setVariable('template2', __FILE__);
 $parameters = $config->getParameters('template_engine.path');
