@@ -1,5 +1,6 @@
 import:
-    - { resource: config2.yml }
+    - config2.yml
+    - config3.yml
 database:
     default_connection: read
     write:
@@ -17,4 +18,4 @@ database:
         charset: utf-8
         dbname: test
 template_engine:
-    path: %template%
+    path: %template%%template2%

@@ -72,6 +72,10 @@ class Configuration
         return $this;
     }
 
+    /**
+     * @param $key
+     * @return string
+     */
     public function getVariable($key)
     {
         return $this->variable->getVariable($key);
@@ -83,15 +87,15 @@ class Configuration
     public function load($resource = null)
     {
         switch(pathinfo($resource, PATHINFO_EXTENSION)) {
-            case "php":
-                $loader = new PhpFileLoader($resource);
-                break;
             case "ini":
                 $loader = new IniFileLoader($resource);
                 break;
             case "yml":
             case "yaml":
                 $loader = new YamlFileLoader($resource);
+                break;
+            default:
+                $loader = new PhpFileLoader($resource);
         }
 
         $this->addLoader($loader);
@@ -168,13 +172,17 @@ class Configuration
 
         foreach ($keys as $value) {
             if (!isset($parameters[$value])) {
-                throw new \InvalidArgumentException(sprintf('%s\' is undefined.', $name));
+                throw new \InvalidArgumentException(sprintf('"%s" is undefined.', $name));
             }
 
             $parameters = $parameters[$value];
         }
 
-        return $parameters;
+        if (is_array($parameters)) {
+            return $parameters;
+        }
+
+        return $this->variable->replaceVariable($parameters);
     }
 
     /**
@@ -183,7 +191,7 @@ class Configuration
      */
     public function addLoader(ConfigLoaderInterface $loaderInterface)
     {
-        $this->mergeparameters($loaderInterface->getparameters());
+        $this->mergeParameters($loaderInterface->getparameters());
 
         return $this;
     }

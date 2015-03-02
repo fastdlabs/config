@@ -13,24 +13,75 @@
 
 namespace Dobee\Configuration;
 
-class Variable 
+/**
+ * Class Variable
+ *
+ * @package Dobee\Configuration
+ */
+class Variable
 {
+    /**
+     * @var array
+     */
     private $variable = array();
 
-    public function setVariable($key, $value)
+    /**
+     * @var string
+     */
+    private $delimiter = '%';
+
+    /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
+    public function setVariable($name, $value)
     {
-        $this->variable[$key] = $value;
+        $this->variable[$name] = $value;
 
         return $this;
     }
 
-    public function hasVariable($key)
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function hasVariable($name)
     {
-        return isset($this->variable[$key]);
+        return isset($this->variable[$name]);
     }
 
-    public function getVariable($key)
+    /**
+     * @param $name
+     * @return string
+     * @throws ConfigurationVariableException
+     */
+    public function getVariable($name)
     {
-        return isset($this->variable[$key]) ? $this->variable[$key] : false;
+        if (!$this->hasVariable($name)) {
+            throw new ConfigurationVariableException(sprintf('Variable "%s" is undefined.', $name));
+        }
+
+        return $this->variable[$name];
+    }
+
+    /**
+     * @param $variable
+     * @return string
+     * @throw ConfigurationVariableException
+     */
+    public function replaceVariable($variable)
+    {
+        $variable = preg_replace_callback(sprintf('/%s(\w+)%s/', $this->delimiter, $this->delimiter), function ($match) use (&$variable) {
+
+            if (!$this->hasVariable($match[1])) {
+                throw new ConfigurationVariableException(sprintf('Variable "%s" is undefined.', $match[1]));
+            }
+
+            return $this->variable[$match[1]];
+
+        }, $variable);
+
+        return $variable;
     }
 }

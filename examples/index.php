@@ -10,7 +10,7 @@
  * Blog: http://segmentfault.com/blog/janhuang
  * Gmail: bboyjanhuang@gmail.com
  */
-
+echo '<pre>';
 $composer = include __DIR__ . '/../vendor/autoload.php';
 
 use Dobee\Configuration\Configuration;
@@ -19,12 +19,15 @@ use Dobee\Configuration\Loader\YamlFileLoader;
 $config = Configuration::createConfigurationLoader();
 
 $config->load(__DIR__ . '/config.yml');
-$config->addLoader(new YamlFileLoader(__DIR__ . '/config2.yml'));
+//$config->addLoader(new YamlFileLoader(__DIR__ . '/config2.yml'));
 
-echo '<pre>';
-print_r($config);
+
+
+$config->setVariable('template', __DIR__);
+$config->setVariable('template2', __FILE__);
 $parameters = $config->getParameters('template_engine.path');
 print_r($parameters);
+print_r($config);
 
 //$config->addLoader(new YamlFileLoader(__DIR__ . '/config.yml'));
 //$config->addLoader(new YamlFileLoader(__DIR__ . '/config2.yml'));

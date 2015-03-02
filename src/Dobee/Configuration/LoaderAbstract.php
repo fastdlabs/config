@@ -13,17 +13,32 @@
 
 namespace Dobee\Configuration;
 
-use Dobee\Configuration\ConfigLoaderInterface;
-
+/**
+ * Class LoaderAbstract
+ *
+ * @package Dobee\Configuration
+ */
 abstract class LoaderAbstract implements ConfigLoaderInterface
 {
+    /**
+     * @var array
+     */
     private $parameters = array();
 
+    /**
+     * @param null $resource
+     * @throws ConfigurationFileNotFoundException
+     */
     public function __construct($resource = null)
     {
         $this->load($resource);
     }
 
+    /**
+     * @param null $resource
+     * @return LoaderAbstract
+     * @throws ConfigurationFileNotFoundException
+     */
     public function load($resource = null)
     {
         if (!file_exists($resource)) {
@@ -33,6 +48,10 @@ abstract class LoaderAbstract implements ConfigLoaderInterface
         return $this->setParameters($this->parser($resource));
     }
 
+    /**
+     * @param array $parameters
+     * @return $this
+     */
     public function setParameters(array $parameters = array())
     {
         $this->parameters = $parameters;
@@ -40,6 +59,10 @@ abstract class LoaderAbstract implements ConfigLoaderInterface
         return $this;
     }
 
+    /**
+     * @param null $name
+     * @return array
+     */
     public function getParameters($name = null)
     {
         return $this->parameters;
