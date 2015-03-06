@@ -32,17 +32,17 @@ class Configuration
     /**
      * @var $this
      */
-    private static $instance;
+    protected static $instance;
 
     /**
      * @var Variable
      */
-    private $variable;
+    protected $variable;
 
     /**
      * @param array $resource
      */
-    private function __construct(array $resource = null)
+    public function __construct(array $resource = null)
     {
         $this->variable = new Variable();
     }
@@ -53,11 +53,11 @@ class Configuration
      */
     public static function createConfigurationLoader(array $resource = null)
     {
-        if (null === self::$instance) {
-            self::$instance = new self($resource);
+        if (null === static::$instance) {
+            static::$instance = new static($resource);
         }
 
-        return self::$instance;
+        return static::$instance;
     }
 
     /**
