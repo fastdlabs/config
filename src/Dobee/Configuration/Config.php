@@ -70,9 +70,14 @@ class Config extends ConfigCaching
 
     /**
      * @param null $resource
+     * @return void|true
      */
     public function load($resource = null)
     {
+        if ($this->getCaching()) {
+            return true;
+        }
+
         switch(pathinfo($resource, PATHINFO_EXTENSION)) {
             case "ini":
                 $this->addLoader(new IniFileLoader($resource));
