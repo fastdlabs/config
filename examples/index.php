@@ -19,12 +19,7 @@ use Dobee\Configuration\Loader\IniFileLoader;
 
 $config = new \Dobee\Configuration\Config();
 
-if ($config->getCaching()) {
-    print_r($config);
-    die;
-}
-
 $config->load(__DIR__ . '/config.yml');
 
-print_r($config);
+echo '<pre>';
 $config->setCaching();

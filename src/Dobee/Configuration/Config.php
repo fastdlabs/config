@@ -157,6 +157,10 @@ class Config extends ConfigCaching
             return $this->parameters;
         }
 
+        if (isset($this->parameters[$name])) {
+            return $this->parameters[$name];
+        }
+
         $keys = explode('.', $name);
         $parameters = $this->parameters;
 
@@ -193,7 +197,30 @@ class Config extends ConfigCaching
     {
         $caching = $this->getCachePath() . DIRECTORY_SEPARATOR . $this->getCacheName();
 
-        file_put_contents($caching, '<?php return ' . var_export($this->parameters, true) . ';');
+        $parameters = array();
+
+        $recursion = function ($parent = array(), array $config) use (&$parameters, &$recursion) {
+            foreach ($config as $key => $val) {
+
+                if (is_array($val)) {
+                    $parent[] = $key;
+                    $recursion($parent, $val);
+                    array_pop($parent);
+                } else {
+                    if (!empty($parent)) {
+                        $key = implode('.', $parent) . '.' . $key;
+                    }
+
+                    $parameters[$key] = $this->getParameters($key);
+                }
+            }
+        };
+
+        $recursion(array(), $this->parameters);
+
+        $parameters = array_merge($parameters, $this->parameters);
+
+        file_put_contents($caching, '<?php return ' . var_export($parameters, true) . ';');
     }
 
     /**

@@ -1,4 +1,20 @@
 <?php return array (
+  'import.0' => 'config2.yml',
+  'import.1' => 'config3.yml',
+  'database.default_connection' => 'read',
+  'database.write.host' => 'localhost',
+  'database.write.user' => 'root',
+  'database.write.pwd' => '123456',
+  'database.write.port' => '3306',
+  'database.write.charset' => 'utf-8',
+  'database.write.dbname' => 'test',
+  'database.read.host' => 'localhost',
+  'database.read.user' => 'root',
+  'database.read.pwd' => '123456',
+  'database.read.port' => '3306',
+  'database.read.charset' => 'utf-8',
+  'database.read.dbname' => 'test',
+  'template_engine.path' => 'demo',
   'import' => 
   array (
     0 => 'config2.yml',
@@ -28,6 +44,6 @@
   ),
   'template_engine' => 
   array (
-    'path' => '%template%%template2%',
+    'path' => 'demo',
   ),
 );
