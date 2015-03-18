@@ -12,7 +12,7 @@
  */
 
 return [
-    'php' => array(
-        'name' => 'php'
+    'template_engine' => array(
+            'path' => '%template%%template2%',
     )
 ];

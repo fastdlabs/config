@@ -13,12 +13,11 @@
 
 namespace Dobee\Configuration\Loader;
 
-use Dobee\Configuration\ConfigurationFileNotFoundException;
-use Dobee\Configuration\LoaderAbstract;
+use Dobee\Configuration\Loader;
 
-class PhpFileLoader extends LoaderAbstract
+class PhpFileLoader extends Loader
 {
-    public function parser($resource = null)
+    public function parse($resource = null)
     {
         return include $resource;
     }

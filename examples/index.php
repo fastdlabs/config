@@ -13,26 +13,18 @@
 echo '<pre>';
 $composer = include __DIR__ . '/../vendor/autoload.php';
 
-use Dobee\Configuration\Configuration;
-use Dobee\Configuration\Loader\YamlFileLoader;
+use Dobee\Configuration\Loader\YmlFileLoader;
+use Dobee\Configuration\Loader\PhpFileLoader;
+use Dobee\Configuration\Loader\IniFileLoader;
 
-$config = Configuration::createConfigurationLoader();
+$config = new \Dobee\Configuration\Config();
+
+if ($config->getCaching()) {
+    print_r($config);
+    die;
+}
 
 $config->load(__DIR__ . '/config.yml');
-//$config->addLoader(new YamlFileLoader(__DIR__ . '/config2.yml'));
 
-$config->setVariable('template', __DIR__);
-$config->setVariable('template2', __FILE__);
-$parameters = $config->getParameters('template_engine.path');
-print_r($parameters);
 print_r($config);
-
-//$config->addLoader(new YamlFileLoader(__DIR__ . '/config.yml'));
-//$config->addLoader(new YamlFileLoader(__DIR__ . '/config2.yml'));
-//$config->addLoader(new IniFileLoader(__DIR__ . '/config.ini'));
-//$config->addLoader(new PhpFileLoader(__DIR__ . '/config.php'));
-
-//$options = $config->getOptions();
-
-//print_r($options);
-
+$config->setCaching();

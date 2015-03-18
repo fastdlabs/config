@@ -54,12 +54,11 @@ class Variable
     /**
      * @param $name
      * @return string
-     * @throws ConfigurationVariableException
      */
     public function getVariable($name)
     {
         if (!$this->hasVariable($name)) {
-            throw new ConfigurationVariableException(sprintf('Variable "%s" is undefined.', $name));
+            throw new \InvalidArgumentException(sprintf('Variable "%s" is undefined.', $name));
         }
 
         return $this->variable[$name];
@@ -68,14 +67,13 @@ class Variable
     /**
      * @param $variable
      * @return string
-     * @throw ConfigurationVariableException
      */
     public function replaceVariable($variable)
     {
         $variable = preg_replace_callback(sprintf('/%s(\w+)%s/', $this->delimiter, $this->delimiter), function ($match) use (&$variable) {
 
             if (!$this->hasVariable($match[1])) {
-                throw new ConfigurationVariableException(sprintf('Variable "%s" is undefined.', $match[1]));
+                throw new \InvalidArgumentException(sprintf('Variable "%s" is undefined.', $match[1]));
             }
 
             return $this->variable[$match[1]];

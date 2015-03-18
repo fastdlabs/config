@@ -13,10 +13,9 @@
 
 namespace Dobee\Configuration\Loader;
 
-use Dobee\Configuration\ConfigurationFileNotFoundException;
-use Dobee\Configuration\LoaderAbstract;
+use Dobee\Configuration\Loader;
 
-class YamlFileLoader extends LoaderAbstract
+class YmlFileLoader extends Loader
 {
     private $path;
 
@@ -37,7 +36,13 @@ class YamlFileLoader extends LoaderAbstract
     public function load($resource = null)
     {
         if (!file_exists($resource)) {
-            throw new ConfigurationFileNotFoundException(sprintf('$s\' not found.', $resource));
+            throw new \InvalidArgumentException(sprintf('"%s" not found.', $resource));
+        }
+
+        if (function_exists('yaml_parse_file')) {
+            $this->setParameters(yaml_parse_file($resource));
+
+            return $this;
         }
 
         if (!empty($resource) && strpos($resource, "\n") === false && file_exists($resource)) {
@@ -50,7 +55,7 @@ class YamlFileLoader extends LoaderAbstract
             $resource[$key] = rtrim ($value, "\r");
         }
 
-        $this->setParameters($this->parser($resource));
+        $this->setParameters($this->parse($resource));
 
         return $this;
     }
@@ -457,7 +462,7 @@ class YamlFileLoader extends LoaderAbstract
         return $line;
     }
 
-    public function parser($resource = null)
+    public function parse($resource = null)
     {
         if (empty($resource)) {
             return array();

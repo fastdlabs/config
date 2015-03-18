@@ -13,26 +13,22 @@
 
 namespace Dobee\Configuration;
 
+use Dobee\Configuration\Caching\ConfigCaching;
 use Dobee\Configuration\Loader\IniFileLoader;
 use Dobee\Configuration\Loader\PhpFileLoader;
-use Dobee\Configuration\Loader\YamlFileLoader;
+use Dobee\Configuration\Loader\YmlFileLoader;
 
 /**
  * Class Configuration
  *
  * @package Dobee\Configuration
  */
-class Configuration
+class Config extends ConfigCaching
 {
     /**
      * @var array
      */
     private $parameters = array();
-
-    /**
-     * @var $this
-     */
-    protected static $instance;
 
     /**
      * @var Variable
@@ -45,19 +41,10 @@ class Configuration
     public function __construct(array $resource = null)
     {
         $this->variable = new Variable();
-    }
 
-    /**
-     * @param array $resource
-     * @return Configuration
-     */
-    public static function createConfigurationLoader(array $resource = null)
-    {
-        if (null === static::$instance) {
-            static::$instance = new static($resource);
+        if (null !== $resource) {
+            $this->load($resource);
         }
-
-        return static::$instance;
     }
 
     /**
@@ -88,17 +75,15 @@ class Configuration
     {
         switch(pathinfo($resource, PATHINFO_EXTENSION)) {
             case "ini":
-                $loader = new IniFileLoader($resource);
+                $this->addLoader(new IniFileLoader($resource));
                 break;
             case "yml":
             case "yaml":
-                $loader = new YamlFileLoader($resource);
+                $this->addLoader(new YmlFileLoader($resource));
                 break;
             default:
-                $loader = new PhpFileLoader($resource);
+                $this->addLoader(new PhpFileLoader($resource));
         }
-
-        $this->addLoader($loader);
     }
 
     /**
@@ -186,13 +171,51 @@ class Configuration
     }
 
     /**
-     * @param ConfigLoaderInterface $loaderInterface
+     * @param Loader $loader
      * @return $this
      */
-    public function addLoader(ConfigLoaderInterface $loaderInterface)
+    public function addLoader(Loader $loader)
     {
-        $this->mergeParameters($loaderInterface->getparameters());
+        $this->mergeParameters($loader->getparameters());
 
         return $this;
+    }
+
+    /**
+     *
+     */
+    public function setCaching()
+    {
+        $caching = $this->getCachePath() . DIRECTORY_SEPARATOR . $this->getCacheName();
+
+        file_put_contents($caching, '<?php return ' . var_export($this->parameters, true) . ';');
+    }
+
+    /**
+     * @return bool
+     */
+    public function getCaching()
+    {
+        if (false !== ($caching = $this->hasCaching())) {
+            $parameters = include $caching;
+
+            if (is_array($parameters)) {
+                $this->parameters = $parameters;
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool|string
+     */
+    public function hasCaching()
+    {
+        $caching = $this->getCachePath() . DIRECTORY_SEPARATOR . $this->getCacheName();
+
+        return file_exists($caching) ? $caching : false;
     }
 }

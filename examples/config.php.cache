@@ -1,0 +1,33 @@
+<?php return array (
+  'import' => 
+  array (
+    0 => 'config2.yml',
+    1 => 'config3.yml',
+  ),
+  'database' => 
+  array (
+    'default_connection' => 'read',
+    'write' => 
+    array (
+      'host' => 'localhost',
+      'user' => 'root',
+      'pwd' => 123456,
+      'port' => 3306,
+      'charset' => 'utf-8',
+      'dbname' => 'test',
+    ),
+    'read' => 
+    array (
+      'host' => 'localhost',
+      'user' => 'root',
+      'pwd' => 123456,
+      'port' => 3306,
+      'charset' => 'utf-8',
+      'dbname' => 'test',
+    ),
+  ),
+  'template_engine' => 
+  array (
+    'path' => '%template%%template2%',
+  ),
+);

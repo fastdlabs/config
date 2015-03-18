@@ -14,11 +14,11 @@
 namespace Dobee\Configuration;
 
 /**
- * Class LoaderAbstract
+ * Class Loader
  *
  * @package Dobee\Configuration
  */
-abstract class LoaderAbstract implements ConfigLoaderInterface
+abstract class Loader
 {
     /**
      * @var array
@@ -27,26 +27,36 @@ abstract class LoaderAbstract implements ConfigLoaderInterface
 
     /**
      * @param null $resource
-     * @throws ConfigurationFileNotFoundException
      */
     public function __construct($resource = null)
     {
-        $this->load($resource);
+        if (null !== $resource) {
+            $this->load($resource);
+        }
     }
 
     /**
      * @param null $resource
-     * @return LoaderAbstract
-     * @throws ConfigurationFileNotFoundException
+     * @return mixed
      */
     public function load($resource = null)
     {
-        if (!file_exists($resource)) {
-            throw new ConfigurationFileNotFoundException(sprintf('%s\' is not found.', $resource));
+        if (empty($resource)) {
+            throw new \InvalidArgumentException('Configuration resource is empty or null.');
         }
 
-        return $this->setParameters($this->parser($resource));
+        if (!file_exists($resource)) {
+            throw new \LogicException(sprintf('Configuration resource file "%s" is not found.', $resource));
+        }
+
+        $this->parameters = $this->parse($resource);
     }
+
+    /**
+     * @param null $resource
+     * @return mixed
+     */
+    abstract public function parse($resource = null);
 
     /**
      * @param array $parameters
@@ -62,9 +72,18 @@ abstract class LoaderAbstract implements ConfigLoaderInterface
     /**
      * @param null $name
      * @return array
+     * @throw InvalidArgumentException
      */
     public function getParameters($name = null)
     {
-        return $this->parameters;
+        if (null === $name) {
+            return $this->parameters;
+        }
+
+        if (!isset($this->parameters[$name])) {
+            throw new \InvalidArgumentException(sprintf('Configuration "%s" is undefined.', $name));
+        }
+
+        return $this->parameters[$name];
     }
  }
