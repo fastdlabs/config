@@ -39,12 +39,6 @@ class YmlFileLoader extends Loader
             throw new \InvalidArgumentException(sprintf('"%s" not found.', $resource));
         }
 
-        if (function_exists('yaml_parse_file')) {
-            $this->setParameters(yaml_parse_file($resource));
-
-            return $this;
-        }
-
         if (!empty($resource) && strpos($resource, "\n") === false && file_exists($resource)) {
             $resource = file_get_contents($resource);
         }
