@@ -161,6 +161,10 @@ class Config extends ConfigCaching
             return $this->parameters[$name];
         }
 
+        if (false === strpos($name, '.')) {
+            throw new \InvalidArgumentException(sprintf('"%s" is undefined.', $name));
+        }
+
         $keys = explode('.', $name);
         $parameters = $this->parameters;
 
