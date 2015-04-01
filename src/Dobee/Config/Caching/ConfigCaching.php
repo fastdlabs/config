@@ -11,7 +11,7 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Configuration\Caching;
+namespace Dobee\Config\Caching;
 
 /**
  * Class ConfigCaching

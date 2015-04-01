@@ -11,12 +11,12 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Configuration;
+namespace Dobee\Config;
 
-use Dobee\Configuration\Caching\ConfigCaching;
-use Dobee\Configuration\Loader\IniFileLoader;
-use Dobee\Configuration\Loader\PhpFileLoader;
-use Dobee\Configuration\Loader\YmlFileLoader;
+use Dobee\Config\Caching\ConfigCaching;
+use Dobee\Config\Loader\IniFileLoader;
+use Dobee\Config\Loader\PhpFileLoader;
+use Dobee\Config\Loader\YmlFileLoader;
 
 /**
  * Class Configuration

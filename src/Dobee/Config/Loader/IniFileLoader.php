@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: janhuang
  * Date: 15/1/30
- * Time: 下午10:19
+ * Time: 下午10:15
  * Github: https://www.github.com/janhuang 
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -11,14 +11,14 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Configuration\Loader;
+namespace Dobee\Config\Loader;
 
-use Dobee\Configuration\Loader;
+use Dobee\Config\Loader;
 
-class PhpFileLoader extends Loader
+class IniFileLoader extends Loader
 {
     public function parse($resource = null)
     {
-        return include $resource;
+        return parse_ini_file($resource, true);
     }
 }

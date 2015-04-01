@@ -11,9 +11,9 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Configuration\Loader;
+namespace Dobee\Config\Loader;
 
-use Dobee\Configuration\Loader;
+use Dobee\Config\Loader;
 
 class YmlFileLoader extends Loader
 {

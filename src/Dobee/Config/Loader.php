@@ -11,7 +11,7 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Configuration;
+namespace Dobee\Config;
 
 /**
  * Class Loader
