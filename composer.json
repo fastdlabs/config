@@ -1,11 +1,11 @@
 {
-    "name": "dobee/configuration",
+    "name": "dobee/config",
     "description": "dobee configuration component",
     "license": "MIT",
     "authors": [
         {
             "name": "janhuang",
-            "email": "384099566@qq.com"
+            "email": "bboyjanhuang@gmail.com"
         }
     ],
     "minimum-stability": "dev",
