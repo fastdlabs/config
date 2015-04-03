@@ -60,4 +60,19 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('384099566', $this->config->getParameters('qq'));
     }
+
+    public function testArray()
+    {
+        $this->config->load(__DIR__ . '/array.yml');
+
+        $this->assertEquals(array(
+            123,
+            'abc',
+            'efg'
+        ), $this->config->getParameters('array'));
+
+        $this->assertEquals('abc', $this->config->getParameters('array.1'));
+        $this->assertEquals('123', $this->config->getParameters('array.0'));
+        $this->assertEquals('janhuang', $this->config->getParameters('array2.name'));
+    }
 }
