@@ -28,11 +28,9 @@ abstract class Loader
     /**
      * @param null $resource
      */
-    public function __construct($resource = null)
+    public function __construct($resource)
     {
-        if (null !== $resource) {
-            $this->load($resource);
-        }
+        $this->load($resource);
     }
 
     /**
@@ -41,11 +39,7 @@ abstract class Loader
      */
     public function load($resource = null)
     {
-        if (empty($resource)) {
-            throw new \InvalidArgumentException('Configuration resource is empty or null.');
-        }
-
-        if (!file_exists($resource)) {
+        if (empty($resource) || !file_exists($resource)) {
             throw new \LogicException(sprintf('Configuration resource file "%s" is not found.', $resource));
         }
 

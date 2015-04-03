@@ -35,16 +35,9 @@ class Config extends ConfigCaching
      */
     protected $variable;
 
-    /**
-     * @param array $resource
-     */
-    public function __construct(array $resource = null)
+    public function __construct()
     {
         $this->variable = new Variable();
-
-        if (null !== $resource) {
-            $this->load($resource);
-        }
     }
 
     /**
@@ -74,10 +67,6 @@ class Config extends ConfigCaching
      */
     public function load($resource = null)
     {
-        if ($this->getCaching()) {
-            return true;
-        }
-
         switch(pathinfo($resource, PATHINFO_EXTENSION)) {
             case "ini":
                 $this->addLoader(new IniFileLoader($resource));
@@ -158,7 +147,7 @@ class Config extends ConfigCaching
         }
 
         if (isset($this->parameters[$name])) {
-            return $this->parameters[$name];
+            return $this->variable->replaceVariable($this->parameters[$name]);
         }
 
         if (false === strpos($name, '.')) {
