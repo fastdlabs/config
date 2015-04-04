@@ -13,7 +13,6 @@
 
 namespace Dobee\Config;
 
-use Dobee\Config\Caching\ConfigCaching;
 use Dobee\Config\Loader\IniFileLoader;
 use Dobee\Config\Loader\PhpFileLoader;
 use Dobee\Config\Loader\YmlFileLoader;
@@ -23,7 +22,7 @@ use Dobee\Config\Loader\YmlFileLoader;
  *
  * @package Dobee\Configuration
  */
-class Config extends ConfigCaching
+class Config
 {
     /**
      * @var array
