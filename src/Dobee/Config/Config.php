@@ -146,6 +146,10 @@ class Config
         }
 
         if (isset($this->parameters[$name])) {
+            if (is_array($this->parameters[$name])) {
+                return $this->parameters[$name];
+            }
+            
             return $this->variable->replaceVariable($this->parameters[$name]);
         }
 
