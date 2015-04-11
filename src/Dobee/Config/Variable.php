@@ -70,7 +70,7 @@ class Variable
      */
     public function replaceVariable($variable)
     {
-        $variable = preg_replace_callback(sprintf('/%s(\w+)%s/', $this->delimiter, $this->delimiter), function ($match) use (&$variable) {
+        $variable = preg_replace_callback(sprintf('/%s(\w*\.*\w*)%s/', $this->delimiter, $this->delimiter), function ($match) use (&$variable) {
 
             if (!$this->hasVariable($match[1])) {
                 throw new \InvalidArgumentException(sprintf('Variable "%s" is undefined.', $match[1]));

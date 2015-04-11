@@ -149,7 +149,7 @@ class Config
             if (is_array($this->parameters[$name])) {
                 return $this->parameters[$name];
             }
-            
+
             return $this->variable->replaceVariable($this->parameters[$name]);
         }
 
