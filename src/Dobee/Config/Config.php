@@ -27,7 +27,7 @@ class Config
     /**
      * @var array
      */
-    private $parameters = array();
+    protected $parameters = array();
 
     /**
      * @var Variable

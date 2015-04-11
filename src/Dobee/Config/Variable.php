@@ -65,6 +65,14 @@ class Variable
     }
 
     /**
+     * @return array
+     */
+    public function getVariables()
+    {
+        return $this->variable;
+    }
+
+    /**
      * @param $variable
      * @return string
      */
