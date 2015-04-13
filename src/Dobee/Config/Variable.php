@@ -78,6 +78,10 @@ class Variable
      */
     public function replaceVariable($variable)
     {
+        if (false === strpos($variable, '%')) {
+            return $variable;
+        }
+        
         $variable = preg_replace_callback(sprintf('/%s(\w*\.*\w*)%s/', $this->delimiter, $this->delimiter), function ($match) use (&$variable) {
 
             if (!$this->hasVariable($match[1])) {
