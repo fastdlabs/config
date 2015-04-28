@@ -35,8 +35,16 @@ class Variable
      * @param $value
      * @return $this
      */
-    public function setVariable($name, $value)
+    public function setVariable($name, $value = null)
     {
+        if (is_array($name)) {
+            foreach ($name as $key => $value) {
+                $this->variable[$key] = $value;
+            }
+
+            return $this;
+        }
+
         $this->variable[$name] = $value;
 
         return $this;
