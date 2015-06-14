@@ -1,7 +1,9 @@
 {
     "name": "dobee/config",
-    "description": "dobee configuration component",
+    "description": "dobee config component",
     "license": "MIT",
+    "type": "library",
+    "keywords": ["config", "dobee"],
     "authors": [
         {
             "name": "janhuang",
@@ -10,8 +12,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.4",
-        "phpunit/phpunit": "4.5.*"
+        "php": ">=5.4"
     },
     "autoload": {
         "psr-4": {

@@ -34,6 +34,9 @@ class Config
      */
     protected $variable;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->variable = new Variable();
@@ -83,7 +86,7 @@ class Config
      * @param $name
      * @return bool
      */
-    public function hasParameters($name)
+    public function has($name)
     {
         return isset($this->parameters[$name]);
     }
@@ -93,7 +96,7 @@ class Config
      * @param $value
      * @return $this
      */
-    public function addParameters($name, $value)
+    public function add($name, $value)
     {
         $this->parameters[$name] = $value;
 
@@ -104,9 +107,9 @@ class Config
      * @param $name
      * @return $this
      */
-    public function removeParameters($name)
+    public function remove($name)
     {
-        if ($this->hasparameters($name)) {
+        if ($this->has($name)) {
             unset($this->parameters[$name]);
         }
 
@@ -117,7 +120,7 @@ class Config
      * @param array $parameters
      * @return $this
      */
-    public function mergeParameters(array $parameters = array())
+    public function merge(array $parameters = array())
     {
         $this->parameters = array_merge($this->parameters, $parameters);
 
@@ -128,7 +131,7 @@ class Config
      * @param array $parameters
      * @return $this
      */
-    public function setParameters(array $parameters = array())
+    public function set(array $parameters = array())
     {
         $this->parameters = $parameters;
 
@@ -139,12 +142,8 @@ class Config
      * @param null $name
      * @return array
      */
-    public function getParameters($name = null)
+    public function get($name)
     {
-        if (null === $name) {
-            return $this->parameters;
-        }
-
         if (isset($this->parameters[$name])) {
             if (is_array($this->parameters[$name])) {
                 return $this->parameters[$name];
@@ -176,12 +175,20 @@ class Config
     }
 
     /**
+     * @return array
+     */
+    public function all()
+    {
+        return $this->parameters;
+    }
+
+    /**
      * @param Loader $loader
      * @return $this
      */
     public function addLoader(Loader $loader)
     {
-        $this->mergeParameters($loader->getparameters());
+        $this->merge($loader->getparameters());
 
         return $this;
     }
