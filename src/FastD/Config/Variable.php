@@ -11,12 +11,12 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Config;
+namespace FastD\Config;
 
 /**
  * Class Variable
  *
- * @package Dobee\Configuration
+ * @package FastD\Configuration
  */
 class Variable
 {

@@ -11,9 +11,9 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Config\Loader;
+namespace FastD\Config\Loader;
 
-use Dobee\Config\Loader;
+use FastD\Config\Loader;
 
 class IniFileLoader extends Loader
 {

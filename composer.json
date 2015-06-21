@@ -1,9 +1,9 @@
 {
-    "name": "dobee/config",
-    "description": "dobee config component",
+    "name": "fastd/config",
+    "description": "FastD config component",
     "license": "MIT",
     "type": "library",
-    "keywords": ["config", "dobee"],
+    "keywords": ["config", "FastD"],
     "authors": [
         {
             "name": "janhuang",
@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Dobee\\": "src/Dobee"
+            "FastD\\": "src/FastD"
         }
     }
 }

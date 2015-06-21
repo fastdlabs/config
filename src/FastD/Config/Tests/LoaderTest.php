@@ -11,9 +11,9 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Config\Tests;
+namespace FastD\Config\Tests;
 
-use Dobee\Config\Config;
+use FastD\Config\Config;
 
 class LoaderTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,7 +37,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'name' => 'janhuang',
             'qq' => '%qq%',
-        ), $this->config->getParameters());
+        ), $this->config->all());
 
         $this->config->load(__DIR__ . '/config.ini');
 
@@ -45,7 +45,7 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             'name' => 'janhuang',
             'qq' => '%qq%',
             'age' => 22
-        ), $this->config->getParameters());
+        ), $this->config->all());
 
         $this->config->load(__DIR__ . '/config.php');
 
@@ -54,11 +54,11 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             'age' => 22,
             'qq' => '%qq%',
             'gender' => 'male'
-        ), $this->config->getParameters());
+        ), $this->config->all());
 
-        $this->assertEquals('janhuang', $this->config->getParameters('name'));
+        $this->assertEquals('janhuang', $this->config->get('name'));
 
-        $this->assertEquals('384099566', $this->config->getParameters('qq'));
+        $this->assertEquals('384099566', $this->config->get('qq'));
     }
 
     public function testArray()
@@ -69,10 +69,10 @@ class LoaderTest extends \PHPUnit_Framework_TestCase
             123,
             'abc',
             'efg'
-        ), $this->config->getParameters('array'));
+        ), $this->config->get('array'));
 
-        $this->assertEquals('abc', $this->config->getParameters('array.1'));
-        $this->assertEquals('123', $this->config->getParameters('array.0'));
-        $this->assertEquals('janhuang', $this->config->getParameters('array2.name'));
+        $this->assertEquals('abc', $this->config->get('array.1'));
+        $this->assertEquals('123', $this->config->get('array.0'));
+        $this->assertEquals('janhuang', $this->config->get('array2.name'));
     }
 }

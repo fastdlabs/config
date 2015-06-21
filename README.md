@@ -1,3 +1,3 @@
-#Dobee php simple framework Configuration Component
+#FastD php simple framework Configuration Component
 
 #

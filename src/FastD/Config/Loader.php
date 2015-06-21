@@ -11,12 +11,12 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Config;
+namespace FastD\Config;
 
 /**
  * Class Loader
  *
- * @package Dobee\Configuration
+ * @package FastD\Configuration
  */
 abstract class Loader
 {

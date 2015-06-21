@@ -11,16 +11,16 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Config;
+namespace FastD\Config;
 
-use Dobee\Config\Loader\IniFileLoader;
-use Dobee\Config\Loader\PhpFileLoader;
-use Dobee\Config\Loader\YmlFileLoader;
+use FastD\Config\Loader\IniFileLoader;
+use FastD\Config\Loader\PhpFileLoader;
+use FastD\Config\Loader\YmlFileLoader;
 
 /**
  * Class Configuration
  *
- * @package Dobee\Configuration
+ * @package FastD\Configuration
  */
 class Config
 {
