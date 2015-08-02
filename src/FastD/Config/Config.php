@@ -77,6 +77,7 @@ class Config
             case "yaml":
                 $this->addLoader(new YmlFileLoader($resource));
                 break;
+            case 'php':
             default:
                 $this->addLoader(new PhpFileLoader($resource));
         }
@@ -122,7 +123,21 @@ class Config
      */
     public function merge(array $parameters = array())
     {
-        $this->parameters = array_merge($this->parameters, $parameters);
+        $merge = function ($array1, $array2) use (&$merge) {
+            foreach($array2 as $key => $value)
+            {
+                if(array_key_exists($key, $array1) && is_array($value)) {
+
+                    $array1[$key] = $merge($array1[$key], $array2[$key]);
+                } else {
+                    $array1[$key] = $value;
+                }
+            }
+
+            return $array1;
+        };
+
+        $this->parameters = $merge($this->parameters, $parameters);
 
         return $this;
     }
