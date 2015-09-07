@@ -35,7 +35,7 @@ abstract class Loader
 
     /**
      * @param null $resource
-     * @return mixed
+     * @return $this
      */
     public function load($resource = null)
     {
@@ -44,6 +44,8 @@ abstract class Loader
         }
 
         $this->parameters = $this->parse($resource);
+
+        return $this;
     }
 
     /**

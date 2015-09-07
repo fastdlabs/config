@@ -25,6 +25,6 @@ class MergeTest extends \PHPUnit_Framework_TestCase
         $config = new Config();
         $config->addLoader(new PhpFileLoader(__DIR__ . '/config.php'));
         $config->addLoader(new YmlFileLoader(__DIR__ . '/config.yml'));
-//        print_r($config->all());
+        print_r($config->all());
     }
 }
