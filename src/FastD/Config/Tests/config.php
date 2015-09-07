@@ -10,5 +10,8 @@ return array(
         'test1' => [
             'name' => 'rt'
         ]
-    ]
+    ],
+    "name" => null,
+    "age" => 0,
+    "gender" => ''
 );

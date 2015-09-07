@@ -86,7 +86,7 @@ class Variable
      */
     public function replaceVariable($variable)
     {
-        if (false === strpos($variable, '%') || empty($variable)) {
+        if (empty($variable) || false === strpos($variable, '%')) {
             return $variable;
         }
 

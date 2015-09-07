@@ -159,7 +159,7 @@ class Config
      */
     public function get($name)
     {
-        if (isset($this->parameters[$name])) {
+        if (array_key_exists($name, $this->parameters)) {
             if (is_array($this->parameters[$name])) {
                 return $this->parameters[$name];
             }

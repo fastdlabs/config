@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 15/8/2
- * Time: 上午12:35
+ * Date: 15/9/7
+ * Time: 下午4:11
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -16,15 +16,15 @@ namespace FastD\Config\Tests;
 
 use FastD\Config\Config;
 use FastD\Config\Loader\PhpFileLoader;
-use FastD\Config\Loader\YmlFileLoader;
 
-class MergeTest extends \PHPUnit_Framework_TestCase
+class EmptyTest extends \PHPUnit_Framework_TestCase
 {
-    public function testMerge()
+    public function testGetParameters()
     {
         $config = new Config();
         $config->addLoader(new PhpFileLoader(__DIR__ . '/config.php'));
-        $config->addLoader(new YmlFileLoader(__DIR__ . '/config.yml'));
-//        print_r($config->all());
+        $this->assertEquals(null, $config->get('name'));
+        $this->assertEquals(0, $config->get('age'));
+        $this->assertEquals('', $config->get('gender'));
     }
 }
