@@ -175,7 +175,7 @@ class Config
         $parameters = $this->parameters;
 
         foreach ($keys as $value) {
-            if (!isset($parameters[$value])) {
+            if (!array_key_exists($value, $parameters)) {
                 throw new \InvalidArgumentException(sprintf('"%s" is undefined.', $name));
             }
 
