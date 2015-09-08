@@ -89,7 +89,12 @@ class Config
      */
     public function has($name)
     {
-        return isset($this->parameters[$name]);
+        try {
+            $this->get($name);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -151,6 +156,20 @@ class Config
         $this->parameters = $parameters;
 
         return $this;
+    }
+
+    /**
+     * @param $name
+     * @param $default
+     * @return array
+     */
+    public function hasGet($name, $default)
+    {
+        try {
+            return $this->get($name);
+        } catch (\Exception $e) {
+            return $default;
+        }
     }
 
     /**
