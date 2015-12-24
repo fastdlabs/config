@@ -24,6 +24,6 @@ class YmlFileLoader extends Loader
      */
     public function parse($resource = null)
     {
-        return Yaml::parse($resource);
+        return Yaml::parse(file_get_contents($resource));
     }
 }
