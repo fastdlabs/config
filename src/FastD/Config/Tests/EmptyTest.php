@@ -22,7 +22,7 @@ class EmptyTest extends \PHPUnit_Framework_TestCase
     public function testGetParameters()
     {
         $config = new Config();
-        $config->addLoader(new PhpFileLoader(__DIR__ . '/config.php'));
+        $config->addLoader(new PhpFileLoader(__DIR__ . '/config/config.php'));
         $this->assertEquals(null, $config->get('name'));
         $this->assertEquals(0, $config->get('age'));
         $this->assertEquals('', $config->get('gender'));
