@@ -1,3 +1,3 @@
-#FastD php simple framework Configuration Component
+# Config Container
 
-#
+## License MIT
