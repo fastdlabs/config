@@ -164,6 +164,7 @@ class Config
     {
         return $this->parameters;
     }
+
     /**
      * @param array $parameters
      * @return $this
