@@ -4,7 +4,7 @@
  * User: janhuang
  * Date: 15/1/30
  * Time: 下午11:33
- * Github: https://www.github.com/janhuang 
+ * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
  * Blog: http://segmentfault.com/blog/janhuang
@@ -12,10 +12,6 @@
  */
 
 namespace FastD\Config;
-
-use FastD\Config\Loader\IniFileLoader;
-use FastD\Config\Loader\PhpFileLoader;
-use FastD\Config\Loader\YmlFileLoader;
 
 /**
  * Class Configuration
@@ -49,7 +45,7 @@ class Config
      */
     public function setVariable($key, $value = null)
     {
-        $this->variable->setVariable($key, $value);
+        $this->variable->set($key, $value);
 
         return $this;
     }
@@ -60,7 +56,7 @@ class Config
      */
     public function getVariable($key)
     {
-        return $this->variable->getVariable($key);
+        return $this->variable->get($key);
     }
 
     /**
@@ -69,18 +65,7 @@ class Config
      */
     public function load($resource = null)
     {
-        switch(pathinfo($resource, PATHINFO_EXTENSION)) {
-            case "ini":
-                $this->addLoader(new IniFileLoader($resource));
-                break;
-            case "yml":
-            case "yaml":
-                $this->addLoader(new YmlFileLoader($resource));
-                break;
-            case 'php':
-            default:
-                $this->addLoader(new PhpFileLoader($resource));
-        }
+        $this->merge(Loader::load($resource));
     }
 
     /**
@@ -102,7 +87,7 @@ class Config
      * @param $value
      * @return $this
      */
-    public function add($name, $value)
+    public function set($name, $value)
     {
         $this->parameters[$name] = $value;
 
@@ -118,42 +103,6 @@ class Config
         if ($this->has($name)) {
             unset($this->parameters[$name]);
         }
-
-        return $this;
-    }
-
-    /**
-     * @param array $parameters
-     * @return $this
-     */
-    public function merge(array $parameters = array())
-    {
-        $merge = function ($array1, $array2) use (&$merge) {
-            foreach($array2 as $key => $value)
-            {
-                if(array_key_exists($key, $array1) && is_array($value)) {
-
-                    $array1[$key] = $merge($array1[$key], $array2[$key]);
-                } else {
-                    $array1[$key] = $value;
-                }
-            }
-
-            return $array1;
-        };
-
-        $this->parameters = $merge($this->parameters, $parameters);
-
-        return $this;
-    }
-
-    /**
-     * @param array $parameters
-     * @return $this
-     */
-    public function set(array $parameters = array())
-    {
-        $this->parameters = $parameters;
 
         return $this;
     }
@@ -183,7 +132,7 @@ class Config
                 return $this->parameters[$name];
             }
 
-            return $this->variable->replaceVariable($this->parameters[$name]);
+            return $this->variable->replace($this->parameters[$name]);
         }
 
         if (false === strpos($name, '.')) {
@@ -205,7 +154,7 @@ class Config
             return $parameters;
         }
 
-        return $this->variable->replaceVariable($parameters);
+        return $this->variable->replace($parameters);
     }
 
     /**
@@ -215,14 +164,25 @@ class Config
     {
         return $this->parameters;
     }
-
     /**
-     * @param Loader $loader
+     * @param array $parameters
      * @return $this
      */
-    public function addLoader(Loader $loader)
+    public function merge(array $parameters = array())
     {
-        $this->merge($loader->getparameters());
+        $merge = function ($array1, $array2) use (&$merge) {
+            foreach ($array2 as $key => $value) {
+                if (array_key_exists($key, $array1) && is_array($value)) {
+                    $array1[$key] = $merge($array1[$key], $array2[$key]);
+                } else {
+                    $array1[$key] = $value;
+                }
+            }
+
+            return $array1;
+        };
+
+        $this->parameters = $merge($this->parameters, $parameters);
 
         return $this;
     }

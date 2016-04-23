@@ -35,7 +35,7 @@ class Variable
      * @param $value
      * @return $this
      */
-    public function setVariable($name, $value = null)
+    public function set($name, $value = null)
     {
         if (is_array($name)) {
             foreach ($name as $key => $value) {
@@ -54,7 +54,7 @@ class Variable
      * @param $name
      * @return bool
      */
-    public function hasVariable($name)
+    public function has($name)
     {
         return isset($this->variable[$name]);
     }
@@ -63,9 +63,9 @@ class Variable
      * @param $name
      * @return string
      */
-    public function getVariable($name)
+    public function get($name)
     {
-        if (!$this->hasVariable($name)) {
+        if (!$this->has($name)) {
             throw new \InvalidArgumentException(sprintf('Variable "%s" is undefined.', $name));
         }
 
@@ -73,18 +73,10 @@ class Variable
     }
 
     /**
-     * @return array
-     */
-    public function getVariables()
-    {
-        return $this->variable;
-    }
-
-    /**
      * @param $variable
      * @return string
      */
-    public function replaceVariable($variable)
+    public function replace($variable)
     {
         if (empty($variable) || false === strpos($variable, '%')) {
             return $variable;
@@ -92,7 +84,7 @@ class Variable
 
         $variable = preg_replace_callback(sprintf('/%s(\w*\.*\w*)%s/', $this->delimiter, $this->delimiter), function ($match) use (&$variable) {
 
-            if (!$this->hasVariable($match[1])) {
+            if (!$this->has($match[1])) {
                 throw new \InvalidArgumentException(sprintf('Variable "%s" is undefined.', $match[1]));
             }
 
