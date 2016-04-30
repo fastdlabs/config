@@ -2,6 +2,9 @@
 
 简单的 PHP 配置解析器.
 
+![Building](https://api.travis-ci.org/JanHuang/config.svg?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/fastd/config/v/stable)](https://packagist.org/packages/fastd/config) [![Total Downloads](https://poser.pugx.org/fastd/config/downloads)](https://packagist.org/packages/fastd/config) [![Latest Unstable Version](https://poser.pugx.org/fastd/config/v/unstable)](https://packagist.org/packages/fastd/config) [![License](https://poser.pugx.org/fastd/config/license)](https://packagist.org/packages/fastd/config)
+
 ## 要求
 
 * PHP 7+
