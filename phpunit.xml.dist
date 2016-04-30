@@ -12,7 +12,7 @@
     </php>
     <testsuites>
         <testsuite name="FastD PHP Simple Framework Configuration Component Tests">
-            <directory>./src/FastD/Config/Tests/</directory>
+            <directory>./src/Config/Tests/</directory>
         </testsuite>
     </testsuites>
 </phpunit>
