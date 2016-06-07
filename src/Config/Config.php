@@ -65,7 +65,11 @@ class Config
      */
     public function load($resource = null)
     {
-        $this->merge(Loader::load($resource));
+        $config = Loader::load($resource);
+        
+        if (is_array($config)) {
+            $this->merge($config);    
+        }
     }
 
     /**
