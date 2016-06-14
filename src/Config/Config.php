@@ -33,15 +33,31 @@ class Config
     protected $cache;
 
     /**
+     * @var bool
+     */
+    protected $autoCache = false;
+
+    /**
      * Config constructor.
      *
-     * @param null $cache
+     * @param string $cache
+     * @param bool $autoCache
      */
-    public function __construct($cache = null)
+    public function __construct($cache = __DIR__, $autoCache = false)
     {
         $this->variable = new ConfigVariable();
         
         $this->cache = new ConfigCache($this, $cache);
+
+        $this->autoCache = $autoCache;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAutoCache()
+    {
+        return $this->autoCache;
     }
 
     /**
@@ -61,19 +77,31 @@ class Config
     }
 
     /**
-     * @return array
+     * @param string $cacheType
+     * @return array|mixed
      */
-    public function loadCache($cacheType = ConfigCache::SAVE_CACHE_PHP)
+    public function loadCache($cacheType = ConfigCache::CACHE_PHP)
     {
-        return $this->cache->loadCache($cacheType);
+        $this->parameters = $this->cache->loadCache($cacheType);
+
+        return $this->parameters;
     }
 
     /**
-     * @return bool
+     * @param string $cacheType
+     * @return $this
      */
-    public function saveCache()
+    public function saveCache($cacheType = ConfigCache::CACHE_PHP)
     {
-        return $this->cache->saveCacheFile();
+        return $this->cache->saveCacheFile($cacheType);
+    }
+
+    /**
+     * @return ConfigCache
+     */
+    public function getCache()
+    {
+        return $this->cache;
     }
 
     /**
@@ -205,5 +233,15 @@ class Config
         }
 
         return is_array($parameters) ? $parameters : $this->variable->replace($parameters);
+    }
+
+    /**
+     * If auto cache.
+     */
+    public function __destruct()
+    {
+        if ($this->isAutoCache()) {
+            $this->saveCache();
+        }
     }
 }

@@ -25,12 +25,23 @@ class ConfigCacheTest extends \PHPUnit_Framework_TestCase
 
         $cache = new ConfigCache($config, __DIR__);
 
+        $this->assertEquals('.user.php.cache', $cache->getCacheFileName());
+        $this->assertEquals('.user.ini.cache', $cache->getCacheFileName(ConfigCache::CACHE_INI));
+        $this->assertEquals('.user.yml.cache', $cache->getCacheFileName(ConfigCache::CACHE_YML));
+
         $cache->saveCacheFile();
-        $cache->saveCacheFile(ConfigCache::SAVE_CACHE_YML);
+        $cache->saveCacheFile(ConfigCache::CACHE_YML);
 
         $this->assertTrue(file_exists($cache->getCacheFile()));
+        $this->assertTrue(file_exists($cache->getCacheFile(ConfigCache::CACHE_YML)));
+    }
 
-        echo $cache->dump();
-        echo $cache->dump(ConfigCache::SAVE_CACHE_YML);
+    public function testLoadCache()
+    {
+        $config = new Config();
+
+        $cache = new ConfigCache($config, __DIR__);
+
+        print_r($cache->loadCache());
     }
 }

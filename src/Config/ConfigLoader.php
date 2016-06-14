@@ -52,14 +52,27 @@ class ConfigLoader
      */
     public static function load($resource = null)
     {
-        switch (pathinfo($resource, PATHINFO_EXTENSION)) {
+        $extension = pathinfo($resource, PATHINFO_EXTENSION);
+
+        if ('cache' == $extension) {
+            $basename = pathinfo($resource, PATHINFO_BASENAME);
+            $info = explode('.', $basename);
+            $extension = array_pop($info);
+            $extension .= '.' . array_pop($info);
+            unset($info, $basename);
+        }
+
+        switch ($extension) {
             case "ini":
+            case 'cache.ini':
                 $config = static::loadIni($resource);
                 break;
             case "yml":
+            case 'cache.yml':
                 $config = static::loadYml($resource);
                 break;
             case 'php':
+            case 'cache.php':
             default:
                 $config = static::loadPhp($resource);
         }

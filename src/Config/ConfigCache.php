@@ -21,16 +21,12 @@ use Symfony\Component\Yaml\Yaml;
 class ConfigCache
 {
     const DEFAULT_CACHE_DIR = __DIR__;
-
     const DEFAULT_CACHE_NAME = '.user';
-
     const DEFAULT_CACHE_SUFFIX = '.cache';
 
-    const DEFAULT_CACHE_TYPE = 'php';
-
-    const SAVE_CACHE_PHP = '.php';
-    const SAVE_CACHE_YML = '.yml';
-    const SAVE_CACHE_INI = '.ini';
+    const CACHE_PHP = '.php';
+    const CACHE_YML = '.yml';
+    const CACHE_INI = '.ini'; // cannot support.
 
     /**
      * @var Config
@@ -56,20 +52,12 @@ class ConfigCache
      * ConfigCache constructor.
      *
      * @param Config $config
-     * @param null $dir
-     * @param null $name
+     * @param string $dir
+     * @param string $name
      */
-    public function __construct(Config $config, $dir = null, $name = null)
+    public function __construct(Config $config, $dir = ConfigCache::DEFAULT_CACHE_DIR, $name = ConfigCache::DEFAULT_CACHE_NAME)
     {
         $this->config = $config;
-
-        if (null === $dir) {
-            $dir = static::DEFAULT_CACHE_DIR;
-        }
-
-        if (null === $name) {
-            $name = static::DEFAULT_CACHE_NAME;
-        }
 
         $this->dir = $dir;
 
@@ -89,7 +77,7 @@ class ConfigCache
     /**
      * @return null|string
      */
-    public function getName()
+    public function getCacheName()
     {
         return $this->name;
     }
@@ -98,16 +86,25 @@ class ConfigCache
      * @param string $cacheType
      * @return string
      */
-    public function getCacheFile($cacheType = ConfigCache::SAVE_CACHE_PHP)
+    public function getCacheFile($cacheType = ConfigCache::CACHE_PHP)
     {
         return $this->cache . $cacheType . static::DEFAULT_CACHE_SUFFIX;
     }
 
     /**
      * @param string $cacheType
+     * @return mixed
+     */
+    public function getCacheFileName($cacheType = ConfigCache::CACHE_PHP)
+    {
+        return pathinfo($this->getCacheFile($cacheType), PATHINFO_BASENAME);
+    }
+
+    /**
+     * @param string $cacheType
      * @return $this
      */
-    public function saveCacheFile($cacheType = ConfigCache::SAVE_CACHE_PHP)
+    public function saveCacheFile($cacheType = ConfigCache::CACHE_PHP)
     {
         if (!is_dir(dirname($this->cache))) {
             mkdir(dirname($this->cache), 0755, true);
@@ -124,25 +121,25 @@ class ConfigCache
      * @param string $cacheType
      * @return array|mixed
      */
-    public function loadCache($cacheType = ConfigCache::SAVE_CACHE_PHP)
+    public function loadCache($cacheType = ConfigCache::CACHE_PHP)
     {
-        return ConfigLoader::load($this->getCacheFile($cacheType));
+         return ConfigLoader::load($this->getCacheFile($cacheType));
     }
 
     /**
      * @param string $cacheType
      * @return string
      */
-    public function dump($cacheType = ConfigCache::SAVE_CACHE_PHP)
+    public function dump($cacheType = ConfigCache::CACHE_PHP)
     {
         switch ($cacheType) {
-            case ConfigCache::SAVE_CACHE_YML:
+            case ConfigCache::CACHE_YML:
                 $content = Yaml::dump($this->config->all(), 4);
                 break;
-            case ConfigCache::SAVE_CACHE_INI:
+            case ConfigCache::CACHE_INI:
                 throw new \InvalidArgumentException('Cannot support ini cache type. Please you try "yml" or "php" save it.');
                 break;
-            case ConfigCache::SAVE_CACHE_PHP:
+            case ConfigCache::CACHE_PHP:
             default:
                 $content = '<?php return ' . var_export($this->config->all(), true) . ';';
         }

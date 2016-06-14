@@ -63,6 +63,16 @@ echo $config->get('name'); // janhuang
 
 `\FastD\Config\Config::setVariable($name, $value)`, 第一个参数就是配置变量的名字，不需要边界符: `%`，后面是该配置项的值。
 
+### # 新增配置缓存
+
+```php
+$config = new \FastD\Config\Config();
+
+$config->set('name', 'janhuang');
+
+$config->saveCache(); // 创建缓存文件 -> .user.php.cache 默认在 Config 当前目录
+```
+
 ## Testing
 
 ```
