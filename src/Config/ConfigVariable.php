@@ -70,6 +70,14 @@ class ConfigVariable
     }
 
     /**
+     * @return array
+     */
+    public function all()
+    {
+        return $this->variable;
+    }
+
+    /**
      * @param $variable
      * @return string
      */

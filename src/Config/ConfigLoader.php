@@ -20,6 +20,33 @@ use Symfony\Component\Yaml\Yaml;
 class ConfigLoader
 {
     /**
+     * @param $resource
+     * @return array
+     */
+    public static function loadIni($resource)
+    {
+        return parse_ini_file($resource, true);
+    }
+
+    /**
+     * @param $resource
+     * @return mixed
+     */
+    public static function loadPhp($resource)
+    {
+        return include $resource;
+    }
+
+    /**
+     * @param $resource
+     * @return mixed
+     */
+    public static function loadYml($resource)
+    {
+        return Yaml::parse(file_get_contents($resource));
+    }
+
+    /**
      * @param null $resource
      * @return array|mixed
      */
@@ -27,15 +54,14 @@ class ConfigLoader
     {
         switch (pathinfo($resource, PATHINFO_EXTENSION)) {
             case "ini":
-                $config = parse_ini_file($resource, true);
+                $config = static::loadIni($resource);
                 break;
             case "yml":
-            case "yaml":
-                $config = Yaml::parse(file_get_contents($resource));
+                $config = static::loadYml($resource);
                 break;
             case 'php':
             default:
-                $config = include $resource;;
+                $config = static::loadPhp($resource);
         }
 
         return $config;

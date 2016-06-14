@@ -45,6 +45,66 @@ class Config
     }
 
     /**
+     * @param null $resource
+     * @param bool $merge
+     * @return array|mixed
+     */
+    public function load($resource = null, $merge = true)
+    {
+        $config = ConfigLoader::load($resource);
+
+        if (is_array($config) && $merge) {
+            $this->merge($config);
+        }
+
+        return $config;
+    }
+
+    /**
+     * @return array
+     */
+    public function loadCache($cacheType = ConfigCache::SAVE_CACHE_PHP)
+    {
+        return $this->cache->loadCache($cacheType);
+    }
+
+    /**
+     * @return bool
+     */
+    public function saveCache()
+    {
+        return $this->cache->saveCacheFile();
+    }
+
+    /**
+     * @param array $parameters
+     * @return $this
+     */
+    public function merge(array $parameters = array())
+    {
+        if (empty($this->parameters)) {
+            $this->parameters = $parameters;
+            return $this;
+        }
+
+        $merge = function ($array1, $array2) use (&$merge) {
+            foreach ($array2 as $key => $value) {
+                if (array_key_exists($key, $array1) && is_array($value)) {
+                    $array1[$key] = $merge($array1[$key], $array2[$key]);
+                } else {
+                    $array1[$key] = $value;
+                }
+            }
+
+            return $array1;
+        };
+
+        $this->parameters = $merge($this->parameters, $parameters);
+
+        return $this;
+    }
+
+    /**
      * @param      $key
      * @param null $value
      * @return Config
@@ -66,26 +126,11 @@ class Config
     }
 
     /**
-     * @param null $resource
-     * @return array|mixed
+     * @return array
      */
-    public function load($resource = null)
+    public function all()
     {
-        $config = ConfigLoader::load($resource);
-        
-        if (is_array($config)) {
-            $this->merge($config);    
-        }
-
-        return $config;
-    }
-
-    /**
-     * @param null $cache
-     */
-    public function loadCache($cache = null)
-    {
-        
+        return $this->parameters;
     }
 
     /**
@@ -116,19 +161,6 @@ class Config
 
     /**
      * @param $name
-     * @return bool
-     */
-    public function remove($name)
-    {
-        if ($this->has($name)) {
-            unset($this->parameters[$name]);
-        }
-
-        return true;
-    }
-
-    /**
-     * @param $name
      * @param $default
      * @return array
      */
@@ -142,6 +174,8 @@ class Config
     }
 
     /**
+     *
+     *
      * @param null $name
      * @return array
      */
@@ -170,41 +204,6 @@ class Config
             $parameters = $parameters[$value];
         }
 
-        if (is_array($parameters)) {
-            return $parameters;
-        }
-
-        return $this->variable->replace($parameters);
-    }
-
-    /**
-     * @return array
-     */
-    public function all()
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * @param array $parameters
-     * @return $this
-     */
-    public function merge(array $parameters = array())
-    {
-        $merge = function ($array1, $array2) use (&$merge) {
-            foreach ($array2 as $key => $value) {
-                if (array_key_exists($key, $array1) && is_array($value)) {
-                    $array1[$key] = $merge($array1[$key], $array2[$key]);
-                } else {
-                    $array1[$key] = $value;
-                }
-            }
-
-            return $array1;
-        };
-
-        $this->parameters = $merge($this->parameters, $parameters);
-
-        return $this;
+        return is_array($parameters) ? $parameters : $this->variable->replace($parameters);
     }
 }
