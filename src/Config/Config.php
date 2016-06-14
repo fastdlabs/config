@@ -1,47 +1,53 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: janhuang
- * Date: 15/1/30
- * Time: 下午11:33
- * Github: https://www.github.com/janhuang
- * Coding: https://www.coding.net/janhuang
- * SegmentFault: http://segmentfault.com/u/janhuang
- * Blog: http://segmentfault.com/blog/janhuang
- * Gmail: bboyjanhuang@gmail.com
+ *
+ * @author    jan huang <bboyjanhuang@gmail.com>
+ * @copyright 2016
+ *
+ * @link      https://www.github.com/janhuang
+ * @link      http://www.fast-d.cn/
  */
 
 namespace FastD\Config;
 
 /**
- * Class Configuration
+ * Class Config
  *
- * @package FastD\Configuration
+ * @package FastD\Config
  */
 class Config
 {
     /**
      * @var array
      */
-    protected $parameters = array();
+    protected $parameters = [];
 
     /**
-     * @var Variable
+     * @var ConfigVariable
      */
     protected $variable;
 
     /**
-     * Constructor.
+     * @var ConfigCache
      */
-    public function __construct()
+    protected $cache;
+
+    /**
+     * Config constructor.
+     *
+     * @param null $cache
+     */
+    public function __construct($cache = null)
     {
-        $this->variable = new Variable();
+        $this->variable = new ConfigVariable();
+        
+        $this->cache = new ConfigCache($this, $cache);
     }
 
     /**
      * @param      $key
      * @param null $value
-     * @return $this
+     * @return Config
      */
     public function setVariable($key, $value = null)
     {
@@ -61,15 +67,25 @@ class Config
 
     /**
      * @param null $resource
-     * @return void|true
+     * @return array|mixed
      */
     public function load($resource = null)
     {
-        $config = Loader::load($resource);
+        $config = ConfigLoader::load($resource);
         
         if (is_array($config)) {
             $this->merge($config);    
         }
+
+        return $config;
+    }
+
+    /**
+     * @param null $cache
+     */
+    public function loadCache($cache = null)
+    {
+        
     }
 
     /**
@@ -89,7 +105,7 @@ class Config
     /**
      * @param $name
      * @param $value
-     * @return $this
+     * @return Config
      */
     public function set($name, $value)
     {
@@ -100,7 +116,7 @@ class Config
 
     /**
      * @param $name
-     * @return $this
+     * @return bool
      */
     public function remove($name)
     {
@@ -108,7 +124,7 @@ class Config
             unset($this->parameters[$name]);
         }
 
-        return $this;
+        return true;
     }
 
     /**

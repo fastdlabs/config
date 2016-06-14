@@ -1,14 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: janhuang
- * Date: 15/1/30
- * Time: 下午10:15
- * Github: https://www.github.com/janhuang
- * Coding: https://www.coding.net/janhuang
- * SegmentFault: http://segmentfault.com/u/janhuang
- * Blog: http://segmentfault.com/blog/janhuang
- * Gmail: bboyjanhuang@gmail.com
+ *
+ * @author    jan huang <bboyjanhuang@gmail.com>
+ * @copyright 2016
+ *
+ * @link      https://www.github.com/janhuang
+ * @link      http://www.fast-d.cn/
  */
 
 namespace FastD\Config;
@@ -16,18 +13,12 @@ namespace FastD\Config;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class Loader
+ * Class ConfigLoader
  *
- * @package FastD\Configuration
+ * @package FastD\Config
  */
-abstract class Loader
+class ConfigLoader
 {
-    /**
-     * @param null $resource
-     * @return mixed
-     */
-    abstract public function parse($resource = null);
-
     /**
      * @param null $resource
      * @return array|mixed
