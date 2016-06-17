@@ -84,7 +84,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testAutoCache()
     {
-        $config = new Config(__DIR__ . '/auto', true);
+        $config = new Config(__DIR__ . '/auto', null, true);
 
         $cloneConfig = clone $config;
 

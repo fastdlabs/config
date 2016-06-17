@@ -61,7 +61,7 @@ class ConfigCache
 
         $this->dir = $dir;
 
-        $this->name = $name;
+        $this->name = null === $name ? ConfigCache::DEFAULT_CACHE_NAME : $name;
 
         $this->cache = $dir . DIRECTORY_SEPARATOR . $name;
     }
