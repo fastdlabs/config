@@ -41,13 +41,14 @@ class Config
      * Config constructor.
      *
      * @param string $cache
+     * @param string $name
      * @param bool $autoCache
      */
-    public function __construct($cache = __DIR__, $autoCache = false)
+    public function __construct($cache = __DIR__, $name = null, $autoCache = false)
     {
         $this->variable = new ConfigVariable();
         
-        $this->cache = new ConfigCache($this, $cache);
+        $this->cache = new ConfigCache($this, $cache, $name);
 
         $this->autoCache = $autoCache;
     }
