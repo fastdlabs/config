@@ -90,9 +90,4 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue(file_exists($cloneConfig->getCache()->getCacheFile()));
     }
-
-    public function testConfigEnv()
-    {
-        print_r($_ENV);
-    }
 }
