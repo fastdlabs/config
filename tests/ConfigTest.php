@@ -12,8 +12,6 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Config\Tests;
-
 use FastD\Config\Config;
 
 class ConfigTest extends \PHPUnit_Framework_TestCase
@@ -91,5 +89,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         unset($config);
 
         $this->assertTrue(file_exists($cloneConfig->getCache()->getCacheFile()));
+    }
+
+    public function testConfigEnv()
+    {
+        print_r($_ENV);
     }
 }

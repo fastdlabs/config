@@ -8,9 +8,6 @@
  * @link      http://www.fast-d.cn/
  */
 
-
-namespace FastD\Config\Tests;
-
 use FastD\Config\Config;
 use FastD\Config\ConfigCache;
 
@@ -41,7 +38,5 @@ class ConfigCacheTest extends \PHPUnit_Framework_TestCase
         $config = new Config();
 
         $cache = new ConfigCache($config, __DIR__);
-
-        print_r($cache->loadCache());
     }
 }
