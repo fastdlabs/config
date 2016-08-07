@@ -90,7 +90,7 @@ class Config
 
     /**
      * @param string $cacheType
-     * @return $this
+     * @return mixed
      */
     public function saveCache($cacheType = ConfigCache::CACHE_PHP)
     {
