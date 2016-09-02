@@ -22,10 +22,7 @@ class ConfigVariable
      */
     private $variable = array();
 
-    /**
-     * @var string
-     */
-    private $delimiter = '%';
+    const DELIMITER = '%';
 
     /**
      * @param $name
@@ -63,7 +60,7 @@ class ConfigVariable
     public function get($name)
     {
         if (!$this->has($name)) {
-            throw new \InvalidArgumentException(sprintf('Variable "%s" is undefined.', $name));
+            throw new ConfigVariableUndefinedException($name);
         }
 
         return $this->variable[$name];
@@ -87,10 +84,10 @@ class ConfigVariable
             return $variable;
         }
 
-        $variable = preg_replace_callback(sprintf('/%s(\w*\.*\w*)%s/', $this->delimiter, $this->delimiter), function ($match) use (&$variable) {
+        $variable = preg_replace_callback(sprintf('/%s(\w*\.*\w*)%s/', static::DELIMITER, static::DELIMITER), function ($match) use (&$variable) {
 
             if (!$this->has($match[1])) {
-                throw new \InvalidArgumentException(sprintf('Variable "%s" is undefined.', $match[1]));
+                throw new ConfigVariableUndefinedException($match[1]);
             }
 
             return $this->variable[$match[1]];

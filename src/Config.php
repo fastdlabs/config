@@ -81,14 +81,6 @@ class Config
     }
 
     /**
-     * @return ConfigCache
-     */
-    public function getCache()
-    {
-        return $this->cache;
-    }
-
-    /**
      * @param array $parameters
      * @return $this
      */
@@ -147,20 +139,6 @@ class Config
 
     /**
      * @param $name
-     * @return bool
-     */
-    public function has($name)
-    {
-        try {
-            $this->get($name);
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-    /**
-     * @param $name
      * @param $value
      * @return Config
      */
@@ -176,52 +154,38 @@ class Config
      * @param $default
      * @return array
      */
-    public function hasGet($name, $default)
+    public function get($name, $default = null)
     {
         try {
-            return $this->get($name);
-        } catch (\Exception $e) {
+            if (array_key_exists($name, $this->parameters)) {
+                if (is_array($this->parameters[$name])) {
+                    return $this->parameters[$name];
+                }
+
+                return $this->variable->replace($this->parameters[$name]);
+            }
+
+            if (false === strpos($name, '.')) {
+                throw new ConfigUndefinedException($name);
+            }
+
+            $keys = explode('.', $name);
+            $parameters = $this->parameters;
+
+            foreach ($keys as $value) {
+                if (!array_key_exists($value, $parameters)) {
+                    throw new ConfigUndefinedException($name);
+                }
+
+                $parameters = $parameters[$value];
+            }
+
+            return is_array($parameters) ? $parameters : $this->variable->replace($parameters);
+        } catch (ConfigException $e) {
             return $default;
         }
     }
 
-    /**
-     *
-     *
-     * @param null $name
-     * @return array
-     */
-    public function get($name)
-    {
-        if (array_key_exists($name, $this->parameters)) {
-            if (is_array($this->parameters[$name])) {
-                return $this->parameters[$name];
-            }
-
-            return $this->variable->replace($this->parameters[$name]);
-        }
-
-        if (false === strpos($name, '.')) {
-            throw new \InvalidArgumentException(sprintf('"%s" is undefined.', $name));
-        }
-
-        $keys = explode('.', $name);
-        $parameters = $this->parameters;
-
-        foreach ($keys as $value) {
-            if (!array_key_exists($value, $parameters)) {
-                throw new \InvalidArgumentException(sprintf('"%s" is undefined.', $name));
-            }
-
-            $parameters = $parameters[$value];
-        }
-
-        return is_array($parameters) ? $parameters : $this->variable->replace($parameters);
-    }
-
-    /**
-     * If auto cache.
-     */
     public function __destruct()
     {
 

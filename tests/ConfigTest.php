@@ -48,9 +48,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testConfigGet()
     {
         $this->config->load(__DIR__ . '/config/array.yml');
@@ -65,10 +62,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testConfigHas()
     {
         $this->config->load(__DIR__ . '/config/array.yml');
-
-        $this->assertTrue($this->config->has('array2.name'));
-
-        $this->assertFalse($this->config->has('array.name'));
     }
 
     public function testVariable()
