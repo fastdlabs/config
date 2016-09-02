@@ -33,32 +33,15 @@ class Config
     protected $cache;
 
     /**
-     * @var bool
-     */
-    protected $autoCache = false;
-
-    /**
      * Config constructor.
      *
      * @param string $cache
-     * @param string $name
-     * @param bool $autoCache
      */
-    public function __construct($cache = __DIR__, $name = null, $autoCache = false)
+    public function __construct($cache = null)
     {
         $this->variable = new ConfigVariable();
         
-        $this->cache = new ConfigCache($this, $cache, $name);
-
-        $this->autoCache = $autoCache;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAutoCache()
-    {
-        return $this->autoCache;
+//        $this->cache = new ConfigCache($this, $cache, $name);
     }
 
     /**
@@ -241,8 +224,6 @@ class Config
      */
     public function __destruct()
     {
-        if ($this->isAutoCache()) {
-            $this->saveCache();
-        }
+
     }
 }
