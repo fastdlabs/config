@@ -7,10 +7,15 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace FastD\Config;
+namespace FastD\Config\Exceptions;
 
 use InvalidArgumentException;
 
+/**
+ * Class ConfigException
+ *
+ * @package FastD\Config\Exceptions
+ */
 class ConfigException extends InvalidArgumentException
 {
 

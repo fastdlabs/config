@@ -7,20 +7,20 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace FastD\Config;
+namespace FastD\Config\Exceptions;
 
 /**
- * Class ConfigVariableUndefinedException
+ * Class ConfigUndefinedException
  * @package FastD\Config
  */
-class ConfigVariableUndefinedException extends ConfigException
+class ConfigUndefinedException extends ConfigException
 {
     /**
-     * ConfigVariableUndefinedException constructor.
+     * ConfigUndefinedException constructor.
      * @param string $key
      */
     public function __construct($key)
     {
-        parent::__construct(sprintf('Config variable "%s" is undefined.', $key));
+        parent::__construct(sprintf('Config "%s" is undefined.', $key));
     }
 }

@@ -10,6 +10,8 @@
 
 namespace FastD\Config;
 
+use FastD\Config\Exceptions\ConfigVariableUndefinedException;
+
 /**
  * Class ConfigVariable
  *

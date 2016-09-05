@@ -46,6 +46,11 @@ class ConfigLoader
         return Yaml::parse(file_get_contents($resource));
     }
 
+    public static function loadEnv()
+    {
+
+    }
+
     /**
      * @param null $resource
      * @return array|mixed

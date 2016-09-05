@@ -9,6 +9,8 @@
  */
 
 namespace FastD\Config;
+use FastD\Config\Exceptions\ConfigException;
+use FastD\Config\Exceptions\ConfigUndefinedException;
 
 /**
  * Class Config
@@ -20,7 +22,7 @@ class Config
     /**
      * @var array
      */
-    protected $parameters = [];
+    protected $bag = [];
 
     /**
      * @var ConfigVariable
@@ -30,7 +32,7 @@ class Config
     /**
      * @var ConfigCache
      */
-    protected $cache;
+    protected $caching;
 
     /**
      * Config constructor.
@@ -40,7 +42,7 @@ class Config
     public function __construct($cache = null)
     {
         $this->variable = new ConfigVariable();
-        
+
 //        $this->cache = new ConfigCache($this, $cache, $name);
     }
 
@@ -49,7 +51,7 @@ class Config
      * @param bool $merge
      * @return array|mixed
      */
-    public function load($resource = null, $merge = true)
+    public function loadFile($resource = null, $merge = true)
     {
         $config = ConfigLoader::load($resource);
 
@@ -64,20 +66,11 @@ class Config
      * @param string $cacheType
      * @return array|mixed
      */
-    public function loadCache($cacheType = ConfigCache::CACHE_PHP)
+    protected function loadCache($cacheType = ConfigCache::CACHE_PHP)
     {
         $this->parameters = $this->cache->loadCache($cacheType);
 
         return $this->parameters;
-    }
-
-    /**
-     * @param string $cacheType
-     * @return mixed
-     */
-    public function saveCache($cacheType = ConfigCache::CACHE_PHP)
-    {
-        return $this->cache->saveCacheFile($cacheType);
     }
 
     /**
