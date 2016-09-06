@@ -19,12 +19,12 @@ use FastD\Config\Exceptions\ConfigVariableUndefinedException;
  */
 class ConfigVariable
 {
+    const DELIMITER = '%';
+
     /**
      * @var array
      */
     private $variable = array();
-
-    const DELIMITER = '%';
 
     /**
      * @param $name

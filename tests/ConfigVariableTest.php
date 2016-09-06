@@ -1,4 +1,5 @@
 <?php
+use FastD\Config\ConfigVariable;
 
 /**
  *
@@ -10,5 +11,21 @@
  */
 class ConfigVariableTest extends PHPUnit_Framework_TestCase
 {
+    public function testConfigVariables()
+    {
+        $variable = new ConfigVariable();
 
+        $variable->set('name', 'jan');
+
+        $this->assertEquals('jan', $variable->get('name'));
+    }
+
+    public function testConfigVariableReplace()
+    {
+        $variable = new ConfigVariable();
+
+        $variable->set('name', 'jan');
+
+        $this->assertEquals('jan', $variable->replace('%name%'));
+    }
 }
