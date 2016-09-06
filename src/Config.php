@@ -68,9 +68,9 @@ class Config
      */
     protected function loadCache($cacheType = ConfigCache::CACHE_PHP)
     {
-        $this->parameters = $this->cache->loadCache($cacheType);
+        $this->bag = $this->cache->loadCache($cacheType);
 
-        return $this->parameters;
+        return $this->bag;
     }
 
     /**
@@ -127,7 +127,7 @@ class Config
      */
     public function all()
     {
-        return $this->parameters;
+        return $this->bag;
     }
 
     /**
@@ -137,7 +137,7 @@ class Config
      */
     public function set($name, $value)
     {
-        $this->parameters[$name] = $value;
+        $this->bag[$name] = $value;
 
         return $this;
     }
@@ -150,12 +150,11 @@ class Config
     public function get($name, $default = null)
     {
         try {
-            if (array_key_exists($name, $this->parameters)) {
-                if (is_array($this->parameters[$name])) {
-                    return $this->parameters[$name];
+            if (array_key_exists($name, $this->bag)) {
+                if (is_array($this->bag[$name])) {
+                    return $this->bag[$name];
                 }
-
-                return $this->variable->replace($this->parameters[$name]);
+                return $this->variable->replace($this->bag[$name]);
             }
 
             if (false === strpos($name, '.')) {
@@ -163,7 +162,7 @@ class Config
             }
 
             $keys = explode('.', $name);
-            $parameters = $this->parameters;
+            $parameters = $this->bag;
 
             foreach ($keys as $value) {
                 if (!array_key_exists($value, $parameters)) {
