@@ -29,7 +29,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
     public function testConfig()
     {
         $this->config->load(__DIR__ . '/config/config.php');
-
+        
         $this->assertEquals($this->config->all(), [
             'gender' => 'male',
             'demo' => [

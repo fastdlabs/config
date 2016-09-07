@@ -49,7 +49,7 @@ class Config
     /**
      * @param null $resource
      * @param bool $merge
-     * @return array|mixed
+     * @return array
      */
     public function load($resource = null, $merge = true)
     {
@@ -63,13 +63,25 @@ class Config
     }
 
     /**
+     * @param array $env
+     * @return array
+     */
+    public function loadEnv(array $env)
+    {
+        $config = ConfigLoader::loadEnv($env);
+
+        $this->merge($config);
+
+        return $config;
+    }
+
+    /**
      * @param array $bag
      * @return $this
      */
     public function merge(array $bag = array())
     {
-        if (empty($this->bag)) {
-            $this->bag = $bag;
+        if (empty($bag)) {
             return $this;
         }
 
@@ -140,10 +152,7 @@ class Config
     {
         try {
             if (array_key_exists($name, $this->bag)) {
-                if (is_array($this->bag[$name])) {
-                    return $this->bag[$name];
-                }
-                return $this->variable->replace($this->bag[$name]);
+                return $this->bag[$name];
             }
 
             if (false === strpos($name, '.')) {
@@ -160,8 +169,7 @@ class Config
 
                 $parameters = $parameters[$value];
             }
-
-            return is_array($parameters) ? $parameters : $this->variable->replace($parameters);
+            return $parameters;
         } catch (ConfigException $e) {
             return $default;
         }
