@@ -13,5 +13,4 @@ return array(
     ],
     "name" => null,
     "age" => 0,
-    "gender" => ''
 );

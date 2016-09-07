@@ -30,7 +30,7 @@ class ConfigLoader
 
     /**
      * @param $resource
-     * @return mixed
+     * @return array
      */
     public static function loadPhp($resource)
     {
@@ -39,21 +39,31 @@ class ConfigLoader
 
     /**
      * @param $resource
-     * @return mixed
+     * @return array
      */
     public static function loadYml($resource)
     {
         return Yaml::parse(file_get_contents($resource));
     }
 
-    public static function loadEnv()
+    /**
+     * @param array $env
+     * @return array
+     */
+    public static function loadEnv(array $env)
     {
+        $config = [];
 
+        foreach ($env as $item) {
+            $config[$item] = getenv($item);
+        }
+
+        return $config;
     }
 
     /**
      * @param null $resource
-     * @return array|mixed
+     * @return array
      */
     public static function load($resource = null)
     {
@@ -69,15 +79,13 @@ class ConfigLoader
 
         switch ($extension) {
             case "ini":
-            case 'cache.ini':
                 $config = static::loadIni($resource);
                 break;
             case "yml":
-            case 'cache.yml':
                 $config = static::loadYml($resource);
                 break;
             case 'php':
-            case 'cache.php':
+            case 'cache':
             default:
                 $config = static::loadPhp($resource);
         }

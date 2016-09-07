@@ -51,7 +51,7 @@ class Config
      * @param bool $merge
      * @return array|mixed
      */
-    public function loadFile($resource = null, $merge = true)
+    public function load($resource = null, $merge = true)
     {
         $config = ConfigLoader::load($resource);
 
@@ -63,24 +63,13 @@ class Config
     }
 
     /**
-     * @param string $cacheType
-     * @return array|mixed
-     */
-    protected function loadCache($cacheType = ConfigCache::CACHE_PHP)
-    {
-        $this->bag = $this->cache->loadCache($cacheType);
-
-        return $this->bag;
-    }
-
-    /**
-     * @param array $parameters
+     * @param array $bag
      * @return $this
      */
-    public function merge(array $parameters = array())
+    public function merge(array $bag = array())
     {
-        if (empty($this->parameters)) {
-            $this->parameters = $parameters;
+        if (empty($this->bag)) {
+            $this->bag = $bag;
             return $this;
         }
 
@@ -96,7 +85,7 @@ class Config
             return $array1;
         };
 
-        $this->parameters = $merge($this->parameters, $parameters);
+        $this->bag = $merge($this->bag, $bag);
 
         return $this;
     }
