@@ -9,6 +9,7 @@
  */
 
 namespace FastD\Config;
+
 use FastD\Config\Exceptions\ConfigException;
 use FastD\Config\Exceptions\ConfigUndefinedException;
 
