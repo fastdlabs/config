@@ -20,13 +20,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ConfigCache
 {
-    const DEFAULT_CACHE_DIR = __DIR__;
-    const DEFAULT_CACHE_NAME = '.user';
     const DEFAULT_CACHE_SUFFIX = '.cache';
-
-    const CACHE_PHP = '.php';
-    const CACHE_YML = '.yml';
-    const CACHE_INI = '.ini'; // cannot support.
+    const CACHE_NAME = '.config';
 
     /**
      * @var Config
@@ -53,17 +48,14 @@ class ConfigCache
      *
      * @param Config $config
      * @param string $dir
-     * @param string $name
      */
-    public function __construct(Config $config, $dir = ConfigCache::DEFAULT_CACHE_DIR, $name = ConfigCache::DEFAULT_CACHE_NAME)
+    public function __construct(Config $config, $dir = __DIR__)
     {
         $this->config = $config;
 
         $this->dir = $dir;
 
-        $this->name = null === $name ? ConfigCache::DEFAULT_CACHE_NAME : $name;
-
-        $this->cache = $dir . DIRECTORY_SEPARATOR . $name;
+        $this->cache = $dir . DIRECTORY_SEPARATOR . static::CACHE_NAME . static::DEFAULT_CACHE_SUFFIX;
     }
 
     /**
@@ -79,16 +71,15 @@ class ConfigCache
      */
     public function getCacheName()
     {
-        return $this->name;
+        return static::CACHE_NAME;
     }
 
     /**
-     * @param string $cacheType
      * @return string
      */
-    public function getCacheFile($cacheType = ConfigCache::CACHE_PHP)
+    public function getCacheFile()
     {
-        return $this->cache . $cacheType . static::DEFAULT_CACHE_SUFFIX;
+        return $this->cache;
     }
 
     /**
