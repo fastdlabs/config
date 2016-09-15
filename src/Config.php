@@ -35,6 +35,8 @@ class Config
      */
     protected $caching;
 
+    protected $loadCache = false;
+
     /**
      * Config constructor.
      *
@@ -46,7 +48,18 @@ class Config
 
         $this->cache = new ConfigCache($cache);
 
-        if ($this->) {}
+        if ($this->cache->isWritable()) {
+            $this->bag = $this->cache->loadCache();
+            $this->loadCache = true;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLoadCache()
+    {
+        return $this->loadCache;
     }
 
     /**
