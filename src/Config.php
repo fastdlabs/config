@@ -67,7 +67,7 @@ class Config
      * @param array $env
      * @return array
      */
-    public function loadEnv(array $env)
+    public function env(array $env)
     {
         $config = ConfigLoader::loadEnv($env);
 
@@ -178,6 +178,6 @@ class Config
 
     public function __destruct()
     {
-
+        
     }
 }
