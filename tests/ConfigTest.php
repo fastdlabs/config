@@ -62,4 +62,13 @@ class ConfigTest extends PHPUnit_Framework_TestCase
             "age" => 22,
         ]);
     }
+
+    public function testCache()
+    {
+        $config = new Config(__DIR__ );
+
+        $config->load(__DIR__ . '/config/config.ini');
+
+        unset($config);
+    }
 }

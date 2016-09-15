@@ -44,7 +44,9 @@ class Config
     {
         $this->variable = new ConfigVariable();
 
-//        $this->cache = new ConfigCache($this, $cache, $name);
+        $this->cache = new ConfigCache($cache);
+
+        if ($this->) {}
     }
 
     /**
@@ -178,6 +180,8 @@ class Config
 
     public function __destruct()
     {
-        
+        if ($this->cache->isWritable()) {
+            $this->cache->saveCache($this->all());
+        }
     }
 }

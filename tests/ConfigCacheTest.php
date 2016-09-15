@@ -15,28 +15,42 @@ class ConfigCacheTest extends \PHPUnit_Framework_TestCase
 {
     public function testCache()
     {
-        $config = new Config();
+        $cache = new ConfigCache(__DIR__ . '/cache');
 
-        $config->set('name', 'janhuang');
-        $config->set('age', 18);
+        $data = [
+            'name' => 'jan',
+        ];
 
-        $cache = new ConfigCache($config, __DIR__);
+        $dump = $cache->dump($data);
 
-        $this->assertEquals('.user.php.cache', $cache->getCacheFileName());
-        $this->assertEquals('.user.ini.cache', $cache->getCacheFileName(ConfigCache::CACHE_INI));
-        $this->assertEquals('.user.yml.cache', $cache->getCacheFileName(ConfigCache::CACHE_YML));
+        $this->assertEquals('<?php return array (
+  \'name\' => \'jan\',
+);', $dump);
 
-        $cache->saveCacheFile();
-        $cache->saveCacheFile(ConfigCache::CACHE_YML);
+        $cache->saveCache($data);
 
-        $this->assertTrue(file_exists($cache->getCacheFile()));
-        $this->assertTrue(file_exists($cache->getCacheFile(ConfigCache::CACHE_YML)));
+        $cacheData = $cache->loadCache();
+
+        $this->assertEquals($data, $cacheData);
     }
 
-    public function testLoadCache()
+    /**
+     * @expectedException FastD\Config\Exceptions\ConfigCacheUnableException
+     */
+    public function testCannotConfigCacheException()
     {
-        $config = new Config();
+        $cache = new ConfigCache();
 
-        $cache = new ConfigCache($config, __DIR__);
+        $cache->loadCache();
+    }
+
+    /**
+     * @expectedException FastD\Config\Exceptions\ConfigCacheUnableException
+     */
+    public function testNullConfigCacheException()
+    {
+        $cache = new ConfigCache();
+
+        $cache->saveCache([]);
     }
 }

@@ -11,7 +11,7 @@
 
 namespace FastD\Config;
 
-use Symfony\Component\Yaml\Yaml;
+use FastD\Config\Exceptions\ConfigCacheUnableException;
 
 /**
  * Class ConfigCache
@@ -20,13 +20,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class ConfigCache
 {
-    const DEFAULT_CACHE_SUFFIX = '.cache';
-    const CACHE_NAME = '.config';
-
-    /**
-     * @var Config
-     */
-    protected $config;
+    const CACHE_NAME = '.config.cache';
 
     /**
      * @var string
@@ -39,23 +33,50 @@ class ConfigCache
     protected $dir;
 
     /**
-     * @var string
-     */
-    protected $name;
-
-    /**
      * ConfigCache constructor.
      *
-     * @param Config $config
      * @param string $dir
      */
-    public function __construct(Config $config, $dir = __DIR__)
+    public function __construct($dir = null)
     {
-        $this->config = $config;
+        $this->dir = $this->targetCacheDirectory($dir);
 
-        $this->dir = $dir;
+        if (null !== $this->dir) {
+            $this->cache = $this->dir . DIRECTORY_SEPARATOR . static::CACHE_NAME;
+        }
+    }
 
-        $this->cache = $dir . DIRECTORY_SEPARATOR . static::CACHE_NAME . static::DEFAULT_CACHE_SUFFIX;
+    /**
+     * @param $dir
+     * @return string
+     */
+    protected function targetCacheDirectory($dir)
+    {
+        if (empty($dir)) {
+            return null;
+        }
+
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        return rtrim($dir, '/');
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWritable()
+    {
+        return null !== $this->cache;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasCache()
+    {
+        return file_exists($this->cache);
     }
 
     /**
@@ -67,14 +88,6 @@ class ConfigCache
     }
 
     /**
-     * @return null|string
-     */
-    public function getCacheName()
-    {
-        return static::CACHE_NAME;
-    }
-
-    /**
      * @return string
      */
     public function getCacheFile()
@@ -83,58 +96,37 @@ class ConfigCache
     }
 
     /**
-     * @param string $cacheType
-     * @return mixed
-     */
-    public function getCacheFileName($cacheType = ConfigCache::CACHE_PHP)
-    {
-        return pathinfo($this->getCacheFile($cacheType), PATHINFO_BASENAME);
-    }
-
-    /**
-     * @param string $cacheType
+     * @param $data
      * @return $this
      */
-    public function saveCacheFile($cacheType = ConfigCache::CACHE_PHP)
+    public function saveCache(array $data)
     {
-        if (!is_dir(dirname($this->cache))) {
-            mkdir(dirname($this->cache), 0755, true);
+        if (empty($this->cache)) {
+            throw new ConfigCacheUnableException('En... Not setting cache file.');
         }
 
-        $cache = $this->cache . $cacheType . static::DEFAULT_CACHE_SUFFIX;
-
-        file_put_contents($cache, $this->dump($cacheType));
+        file_put_contents($this->cache, $this->dump($data));
 
         return $this;
     }
-
     /**
-     * @param string $cacheType
-     * @return array|mixed
+     * @return array
      */
-    public function loadCache($cacheType = ConfigCache::CACHE_PHP)
+    public function loadCache()
     {
-         return ConfigLoader::load($this->getCacheFile($cacheType));
+        if (!$this->hasCache()) {
+            throw new ConfigCacheUnableException($this->cache);
+        }
+
+        return ConfigLoader::load($this->cache);
     }
 
     /**
-     * @param string $cacheType
+     * @param array $data
      * @return string
      */
-    public function dump($cacheType = ConfigCache::CACHE_PHP)
+    public function dump($data)
     {
-        switch ($cacheType) {
-            case ConfigCache::CACHE_YML:
-                $content = Yaml::dump($this->config->all(), 4);
-                break;
-            case ConfigCache::CACHE_INI:
-                throw new \InvalidArgumentException('Cannot support ini cache type. Please you try "yml" or "php" save it.');
-                break;
-            case ConfigCache::CACHE_PHP:
-            default:
-                $content = '<?php return ' . var_export($this->config->all(), true) . ';';
-        }
-
-        return $content;
+        return '<?php return ' . var_export($data, true) . ';';
     }
 }
