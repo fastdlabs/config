@@ -48,15 +48,18 @@ class Config
      */
     public function __construct(array $config = [], $cache = null)
     {
-        $this->bag = $this->replace($config);
-
         $this->variable = new ConfigVariable();
 
-        $this->cache = new ConfigCache($cache);
+        if (null !== $cache) {
+            $this->caching = new ConfigCache($cache);
+            if ($this->caching->isWritable()) {
+                $this->bag = $this->caching->loadCache();
+                $this->loadCache = true;
+            }
+        }
 
-        if ($this->cache->isWritable()) {
-            $this->bag = $this->cache->loadCache();
-            $this->loadCache = true;
+        if (!$this->isLoadCache()) {
+            $this->bag = $this->replace($config);
         }
     }
 
@@ -208,8 +211,10 @@ class Config
 
     public function __destruct()
     {
-        if ($this->caching->isWritable()) {
-            $this->caching->saveCache($this->all());
+        if ($this->caching instanceof ConfigCache) {
+            if ($this->caching->isWritable()) {
+                $this->caching->saveCache($this->all());
+            }
         }
     }
 }

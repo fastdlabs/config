@@ -67,10 +67,6 @@ class ConfigTest extends PHPUnit_Framework_TestCase
     {
         $config = new Config([], __DIR__);
 
-        if ($config->cache->hasCache()) {
-            $this->assertTrue($config->isLoadCache());
-        }
-
         $config->load(__DIR__ . '/config/config.ini');
 
         unset($config);

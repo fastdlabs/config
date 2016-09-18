@@ -12,6 +12,7 @@
 namespace FastD\Config;
 
 use FastD\Config\Exceptions\ConfigCacheUnableException;
+use RuntimeException;
 
 /**
  * Class ConfigCache
@@ -25,7 +26,7 @@ class ConfigCache
     /**
      * @var string
      */
-    protected $cache;
+    protected $file;
 
     /**
      * @var string
@@ -37,13 +38,11 @@ class ConfigCache
      *
      * @param string $dir
      */
-    public function __construct($dir = null)
+    public function __construct($dir)
     {
         $this->dir = $this->targetCacheDirectory($dir);
 
-        if (null !== $this->dir) {
-            $this->cache = $this->dir . DIRECTORY_SEPARATOR . static::CACHE_NAME;
-        }
+        $this->file = $this->dir . DIRECTORY_SEPARATOR . static::CACHE_NAME;
     }
 
     /**
@@ -52,8 +51,8 @@ class ConfigCache
      */
     protected function targetCacheDirectory($dir)
     {
-        if (empty($dir)) {
-            return null;
+        if (!is_string($dir)) {
+            throw new RuntimeException(sprintf('Cannot open cache directory "%s".', $dir));
         }
 
         if (!file_exists($dir)) {
@@ -69,10 +68,10 @@ class ConfigCache
     public function isWritable()
     {
         if (!$this->hasCache()) {
-            throw new ConfigCacheUnableException('null');
+            return false;
         }
 
-        return is_writeable($this->cache);
+        return is_writeable($this->file);
     }
 
     /**
@@ -80,7 +79,7 @@ class ConfigCache
      */
     public function hasCache()
     {
-        return file_exists($this->cache);
+        return file_exists($this->file);
     }
 
     /**
@@ -96,7 +95,7 @@ class ConfigCache
      */
     public function getCacheFile()
     {
-        return $this->cache;
+        return $this->file;
     }
 
     /**
@@ -105,11 +104,11 @@ class ConfigCache
      */
     public function saveCache(array $data)
     {
-        if (empty($this->cache)) {
+        if (empty($this->file)) {
             throw new ConfigCacheUnableException('En... Not setting cache file.');
         }
 
-        file_put_contents($this->cache, $this->dump($data));
+        file_put_contents($this->file, $this->dump($data));
 
         return $this;
     }
@@ -119,10 +118,10 @@ class ConfigCache
     public function loadCache()
     {
         if (!$this->hasCache()) {
-            throw new ConfigCacheUnableException($this->cache);
+            throw new ConfigCacheUnableException($this->file);
         }
 
-        return ConfigLoader::load($this->cache);
+        return ConfigLoader::load($this->file);
     }
 
     /**

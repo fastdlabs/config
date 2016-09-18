@@ -34,22 +34,16 @@ class ConfigCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($data, $cacheData);
     }
 
-    /**
-     * @expectedException FastD\Config\Exceptions\ConfigCacheUnableException
-     */
     public function testCannotConfigCacheException()
     {
-        $cache = new ConfigCache();
+        $cache = new ConfigCache(__DIR__ . '/cache');
 
         $cache->loadCache();
     }
 
-    /**
-     * @expectedException FastD\Config\Exceptions\ConfigCacheUnableException
-     */
     public function testNullConfigCacheException()
     {
-        $cache = new ConfigCache();
+        $cache = new ConfigCache(__DIR__ . '/cache');
 
         $cache->saveCache([]);
     }
