@@ -208,8 +208,8 @@ class Config
 
     public function __destruct()
     {
-        if ($this->cache->isWritable()) {
-            $this->cache->saveCache($this->all());
+        if ($this->caching->isWritable()) {
+            $this->caching->saveCache($this->all());
         }
     }
 }

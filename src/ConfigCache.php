@@ -68,7 +68,11 @@ class ConfigCache
      */
     public function isWritable()
     {
-        return null !== $this->cache;
+        if (!$this->hasCache()) {
+            throw new ConfigCacheUnableException('null');
+        }
+
+        return is_writeable($this->cache);
     }
 
     /**
