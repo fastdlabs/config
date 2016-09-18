@@ -35,15 +35,21 @@ class Config
      */
     protected $caching;
 
+    /**
+     * @var bool
+     */
     protected $loadCache = false;
 
     /**
      * Config constructor.
      *
+     * @param array $config
      * @param string $cache
      */
-    public function __construct($cache = null)
+    public function __construct(array $config = [], $cache = null)
     {
+        $this->bag = $config;
+
         $this->variable = new ConfigVariable();
 
         $this->cache = new ConfigCache($cache);

@@ -65,7 +65,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 
     public function testCache()
     {
-        $config = new Config(__DIR__ );
+        $config = new Config([], __DIR__);
 
         if ($config->cache->hasCache()) {
             $this->assertTrue($config->isLoadCache());
