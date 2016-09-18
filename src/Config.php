@@ -48,7 +48,7 @@ class Config
      */
     public function __construct(array $config = [], $cache = null)
     {
-        $this->bag = $config;
+        $this->bag = $this->replace($config);
 
         $this->variable = new ConfigVariable();
 
@@ -85,28 +85,37 @@ class Config
     }
 
     /**
-     * @param array $env
+     * @param array $bag
      * @return array
      */
-    public function env(array $env)
+    protected function replace(array $bag)
     {
-        $config = ConfigLoader::loadEnv($env);
+        $replace = function ($bag) use (&$replace) {
+            foreach ($bag as $key => $value) {
+                if (is_array($value)) {
+                    $replace($value);
+                } else {
+                    if ('env' === substr($value, 0, 3)) {
+                        $env = substr($value, 4);
+                        $bag[$key] = ConfigLoader::loadEnv([$env])[$env];
+                    } else {
+                        $bag[$key] = $this->variable->replace($value);
+                    }
+                }
+            }
 
-        $this->merge($config);
+            return $bag;
+        };
 
-        return $config;
+        return $replace($bag);
     }
 
     /**
      * @param array $bag
      * @return $this
      */
-    public function merge(array $bag = array())
+    public function merge(array $bag)
     {
-        if (empty($bag)) {
-            return $this;
-        }
-
         $merge = function ($array1, $array2) use (&$merge) {
             foreach ($array2 as $key => $value) {
                 if (array_key_exists($key, $array1) && is_array($value)) {
@@ -119,7 +128,7 @@ class Config
             return $array1;
         };
 
-        $this->bag = $merge($this->bag, $bag);
+        $this->bag = $merge($this->bag, $this->replace($bag));
 
         return $this;
     }

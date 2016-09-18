@@ -75,4 +75,28 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 
         unset($config);
     }
+
+    public function testVariables()
+    {
+        $config = new Config();
+
+        $config->setVariable('name', 'jan');
+
+        $config->load(__DIR__ . '/config/variable.yml');
+
+        $this->assertEquals([
+            'name' => 'jan'
+        ], $config->all());
+
+        $this->assertEquals('jan', $config->get('name'));
+    }
+
+    public function testEnvLoad()
+    {
+        $config = new Config([
+            'lang' => 'env.LANG'
+        ]);
+
+        $this->assertEquals('zh_CN.UTF-8', $config->get('lang')); // zh_CN.UTF-8
+    }
 }
