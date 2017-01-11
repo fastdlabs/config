@@ -67,7 +67,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
     {
         $config = new Config([], __DIR__);
 
-        $config->load(__DIR__ . '/config/config.ini');
+        $this->assertEquals('22', $config->load(__DIR__ . '/config/config.ini')->get('age'));
 
         unset($config);
     }

@@ -74,7 +74,7 @@ class Config
     /**
      * @param null $resource
      * @param bool $merge
-     * @return array
+     * @return $this
      */
     public function load($resource = null, $merge = true)
     {
@@ -84,7 +84,7 @@ class Config
             $this->merge($config);
         }
 
-        return $config;
+        return $this;
     }
 
     /**
