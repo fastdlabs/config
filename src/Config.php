@@ -97,7 +97,7 @@ class Config
             foreach ($bag as $key => $value) {
                 if (is_array($value)) {
                     $replace($value);
-                } else {
+                } else if (is_string($value)) {
                     if ('env' === substr($value, 0, 3)) {
                         $env = substr($value, 4);
                         $bag[$key] = ConfigLoader::loadEnv([$env])[$env];
