@@ -5,14 +5,14 @@
 ![Building](https://api.travis-ci.org/JanHuang/config.svg?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/fastd/config/v/stable)](https://packagist.org/packages/fastd/config) [![Total Downloads](https://poser.pugx.org/fastd/config/downloads)](https://packagist.org/packages/fastd/config) [![Latest Unstable Version](https://poser.pugx.org/fastd/config/v/unstable)](https://packagist.org/packages/fastd/config) [![License](https://poser.pugx.org/fastd/config/license)](https://packagist.org/packages/fastd/config)
 
-## 要求
+## Requirements
 
-* PHP 7+
+* PHP >= 5.6
 
 ## Composer
 
 ```
-composer require "fastd/config:2.0-dev"
+composer require fastd/config
 ```
 
 ## 使用
@@ -63,7 +63,7 @@ echo $config->get('name'); // janhuang
 
 `\FastD\Config\Config::setVariable($name, $value)`, 第一个参数就是配置变量的名字，不需要边界符: `%`，后面是该配置项的值。
 
-### # 新增配置缓存
+### 新增配置缓存
 
 ```php
 $config = new \FastD\Config\Config();

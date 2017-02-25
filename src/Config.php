@@ -12,6 +12,7 @@ namespace FastD\Config;
 
 use FastD\Config\Exceptions\ConfigException;
 use FastD\Config\Exceptions\ConfigUndefinedException;
+use FastD\Utils\Arr;
 
 /**
  * Class Config
@@ -21,9 +22,9 @@ use FastD\Config\Exceptions\ConfigUndefinedException;
 class Config
 {
     /**
-     * @var array
+     * @var Arr
      */
-    protected $bag = [];
+    protected $config = [];
 
     /**
      * @var ConfigVariable
@@ -31,60 +32,29 @@ class Config
     protected $variable;
 
     /**
-     * @var ConfigCache
-     */
-    protected $caching;
-
-    /**
-     * @var bool
-     */
-    protected $loadCache = false;
-
-    /**
      * Config constructor.
-     *
      * @param array $config
-     * @param string $cache
      */
-    public function __construct(array $config = [], $cache = null)
+    public function __construct(array $config = [])
     {
+        $this->config = arr($config);
+
         $this->variable = new ConfigVariable();
-
-        if (null !== $cache) {
-            $this->caching = new ConfigCache($cache);
-            if ($this->caching->isWritable()) {
-                $this->bag = $this->caching->loadCache();
-                $this->loadCache = true;
-            }
-        }
-
-        if (!$this->isLoadCache()) {
-            $this->bag = $this->replace($config);
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLoadCache()
-    {
-        return $this->loadCache;
     }
 
     /**
      * @param null $resource
-     * @param bool $merge
      * @return $this
      */
-    public function load($resource = null, $merge = true)
+    public function load($resource = null)
     {
-        $config = ConfigLoader::load($resource);
+        $config = load($resource);
 
-        if (is_array($config) && $merge) {
+        if (is_array($config)) {
             $this->merge($config);
         }
 
-        return $this;
+        return $config;
     }
 
     /**
@@ -100,7 +70,7 @@ class Config
                 } else if (is_string($value)) {
                     if ('env' === substr($value, 0, 3)) {
                         $env = substr($value, 4);
-                        $bag[$key] = ConfigLoader::loadEnv([$env])[$env];
+                        $bag[$key] = env([$env])[$env];
                     } else {
                         $bag[$key] = $this->variable->replace($value);
                     }
@@ -114,24 +84,12 @@ class Config
     }
 
     /**
-     * @param array $bag
+     * @param array $array
      * @return $this
      */
-    public function merge(array $bag)
+    public function merge(array $array)
     {
-        $merge = function ($array1, $array2) use (&$merge) {
-            foreach ($array2 as $key => $value) {
-                if (array_key_exists($key, $array1) && is_array($value)) {
-                    $array1[$key] = $merge($array1[$key], $array2[$key]);
-                } else {
-                    $array1[$key] = $value;
-                }
-            }
-
-            return $array1;
-        };
-
-        $this->bag = $merge($this->bag, $this->replace($bag));
+        $this->config->merge($array);
 
         return $this;
     }
@@ -162,59 +120,6 @@ class Config
      */
     public function all()
     {
-        return $this->bag;
-    }
-
-    /**
-     * @param $name
-     * @param $value
-     * @return Config
-     */
-    public function set($name, $value)
-    {
-        $this->bag[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @param $name
-     * @param $default
-     * @return array
-     */
-    public function get($name, $default = null)
-    {
-        try {
-            if (array_key_exists($name, $this->bag)) {
-                return $this->bag[$name];
-            }
-
-            if (false === strpos($name, '.')) {
-                throw new ConfigUndefinedException($name);
-            }
-
-            $keys = explode('.', $name);
-            $parameters = $this->bag;
-
-            foreach ($keys as $value) {
-                if (!array_key_exists($value, $parameters)) {
-                    throw new ConfigUndefinedException($name);
-                }
-
-                $parameters = $parameters[$value];
-            }
-            return $parameters;
-        } catch (ConfigException $e) {
-            return $default;
-        }
-    }
-
-    public function __destruct()
-    {
-        if ($this->caching instanceof ConfigCache) {
-            if ($this->caching->isWritable()) {
-                $this->caching->saveCache($this->all());
-            }
-        }
+        return $this->config->toRaw();
     }
 }
