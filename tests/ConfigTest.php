@@ -23,76 +23,25 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->config = new Config();
-    }
-
-    public function testConfig()
-    {
-        $this->config->load(__DIR__ . '/config/config.php');
-        
-        $this->assertEquals($this->config->all(), [
-            'gender' => 'male',
-            'demo' => [
-                'name' => 'rt',
-                'age' => 16
-            ],
-            'test' => [
-                'test1' => [
-                    'name' => 'rt'
-                ]
-            ],
-            "name" => null,
-            "age" => 0,
-        ]);
-
-        $this->config->load(__DIR__ . '/config/config.ini');
-
-        $this->assertEquals($this->config->all(), [
-            'gender' => 'male',
-            'demo' => [
-                'name' => 'rt',
-                'age' => 16
-            ],
-            'test' => [
-                'test1' => [
-                    'name' => 'rt'
-                ]
-            ],
-            "name" => null,
-            "age" => 22,
+        $this->config = new Config([
+            'name' => '%name%'
         ]);
     }
 
-    public function testCache()
+    public function testLoad()
     {
-        $config = new Config([], __DIR__);
+        $this->config->load(__DIR__ . '/config/array.yml');
 
-        $this->assertEquals('22', $config->load(__DIR__ . '/config/config.ini')->get('age'));
-
-        unset($config);
-    }
-
-    public function testVariables()
-    {
-        $config = new Config();
-
-        $config->setVariable('name', 'jan');
-
-        $config->load(__DIR__ . '/config/variable.yml');
-
+        $this->assertEquals('yml', $this->config->find('foo'));
         $this->assertEquals([
-            'name' => 'jan'
-        ], $config->all());
-
-        $this->assertEquals('jan', $config->get('name'));
+            'name' => '%name%',
+            'foo' => 'yml'
+        ], $this->config->all());
     }
 
-    public function testEnvLoad()
+    public function testVariable()
     {
-        $config = new Config([
-            'lang' => 'env.LANG'
-        ]);
-
-        $this->assertEquals('zh_CN.UTF-8', $config->get('lang')); // zh_CN.UTF-8
+        $this->config->setVariable('name', 'bar');
+        $this->assertEquals('bar', $this->config->find('name'));
     }
 }

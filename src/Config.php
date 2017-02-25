@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * @author    jan huang <bboyjanhuang@gmail.com>
  * @copyright 2016
  *
@@ -10,8 +9,6 @@
 
 namespace FastD\Config;
 
-use FastD\Config\Exceptions\ConfigException;
-use FastD\Config\Exceptions\ConfigUndefinedException;
 use FastD\Utils\Arr;
 
 /**
@@ -19,79 +16,77 @@ use FastD\Utils\Arr;
  *
  * @package FastD\Config
  */
-class Config
+class Config extends Arr
 {
     /**
-     * @var Arr
-     */
-    protected $config = [];
-
-    /**
-     * @var ConfigVariable
+     * @var Variable
      */
     protected $variable;
 
     /**
      * Config constructor.
      * @param array $config
+     * @param array $variable
      */
-    public function __construct(array $config = [])
+    public function __construct(array $config = [], array $variable = [])
     {
-        $this->config = arr($config);
+        parent::__construct($config);
 
-        $this->variable = new ConfigVariable();
+        $this->variable = new Variable($variable);
     }
 
     /**
-     * @param null $resource
+     * @param $file
      * @return $this
      */
-    public function load($resource = null)
+    public function load($file)
     {
-        $config = load($resource);
+        $config = load($file);
 
-        if (is_array($config)) {
-            $this->merge($config);
-        }
+        $this->merge($config);
 
         return $config;
     }
 
     /**
-     * @param array $bag
-     * @return array
+     * @param $value
+     * @return string
      */
-    protected function replace(array $bag)
+    protected function replace($value)
     {
+        if ('env' === substr($value, 0, 3)) {
+            $env = substr($value, 4);
+            return env([$env]);
+        }
+
+        return $this->variable->replace($value);
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public function find($key)
+    {
+        $value = parent::find($key);
+
+        if (is_string($value)) {
+            return $this->replace($value);
+        }
+
         $replace = function ($bag) use (&$replace) {
             foreach ($bag as $key => $value) {
                 if (is_array($value)) {
                     $replace($value);
                 } else if (is_string($value)) {
-                    if ('env' === substr($value, 0, 3)) {
-                        $env = substr($value, 4);
-                        $bag[$key] = env([$env])[$env];
-                    } else {
-                        $bag[$key] = $this->variable->replace($value);
-                    }
+                    $bar[$key] = $this->replace($value);
                 }
             }
 
             return $bag;
         };
 
-        return $replace($bag);
-    }
-
-    /**
-     * @param array $array
-     * @return $this
-     */
-    public function merge(array $array)
-    {
-        $this->config->merge($array);
-
-        return $this;
+        return $replace($value);
     }
 
     /**
@@ -112,7 +107,7 @@ class Config
      */
     public function getVariable($key)
     {
-        return $this->variable->get($key);
+        return $this->variable->find($key);
     }
 
     /**
@@ -120,6 +115,6 @@ class Config
      */
     public function all()
     {
-        return $this->config->toRaw();
+        return $this->toRaw();
     }
 }
