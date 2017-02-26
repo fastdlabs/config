@@ -105,7 +105,7 @@ class Config extends ArrayObject
      * @param $variable
      * @return string
      */
-    public function variable($variable)
+    protected function variable($variable)
     {
         return preg_replace_callback(sprintf('/%s(\w*\.*\w*)%s/', static::GLUE, static::GLUE), function ($match) {
             if (!$this->has($match[1])) {
