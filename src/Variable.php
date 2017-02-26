@@ -10,14 +10,14 @@
 namespace FastD\Config;
 
 use FastD\Config\Exceptions\ConfigVariableUndefinedException;
-use FastD\Utils\Arr;
+use FastD\Utils\ArrayObject;
 
 /**
  * Class ConfigVariable
  *
  * @package FastD\Config
  */
-class Variable extends Arr
+class Variable extends ArrayObject
 {
     const DELIMITER = '%';
 
@@ -35,7 +35,7 @@ class Variable extends Arr
      */
     public function all()
     {
-        return $this->toRaw();
+        return $this->data;
     }
 
     /**

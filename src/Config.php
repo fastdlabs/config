@@ -9,14 +9,14 @@
 
 namespace FastD\Config;
 
-use FastD\Utils\Arr;
+use FastD\Utils\ArrayObject;
 
 /**
  * Class Config
  *
  * @package FastD\Config
  */
-class Config extends Arr
+class Config extends ArrayObject
 {
     /**
      * @var Variable
@@ -115,6 +115,6 @@ class Config extends Arr
      */
     public function all()
     {
-        return $this->toRaw();
+        return $this->data;
     }
 }
