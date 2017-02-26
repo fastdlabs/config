@@ -23,12 +23,14 @@ composer require fastd/config
 ```php
 use FastD\Config\Config;
 
-$config = new Config();
+$config = new Config(array $config, array $variables = []);
 
 $config->load($file);
 
 $config->find($key, $default);
 ```
+
+变量使用 `%` 来标记. 如: `%name%`
 
 ## Testing
 
