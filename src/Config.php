@@ -9,6 +9,7 @@
 
 namespace FastD\Config;
 
+
 use FastD\Utils\ArrayObject;
 
 /**
@@ -18,21 +19,23 @@ use FastD\Utils\ArrayObject;
  */
 class Config extends ArrayObject
 {
+    const GLUE = '%';
+
     /**
-     * @var Variable
+     * @var array
      */
-    protected $variable;
+    protected $variables = [];
 
     /**
      * Config constructor.
-     * @param array $config
-     * @param array $variable
+     * @param $config
+     * @param array $variables
      */
-    public function __construct(array $config = [], array $variable = [])
+    public function __construct(array $config = [], array $variables = [])
     {
         parent::__construct($config);
 
-        $this->variable = new Variable($variable);
+        $this->variables = $variables;
     }
 
     /**
@@ -59,18 +62,27 @@ class Config extends ArrayObject
             return env($env);
         }
 
-        return $this->variable->replace($value);
+        if (empty($value) || false === strpos($value, '%')) {
+            return $value;
+        }
+
+        return $this->variable($value);
     }
 
     /**
      * @param $key
+     * @param $default
      * @return mixed
      */
-    public function find($key)
+    public function find($key, $default = null)
     {
-        $value = parent::find($key);
+        try {
+            $value = parent::find($key);
+        } catch (\Exception $exception) {
+            return $default;
+        }
 
-        if (is_string($value)) {
+        if (!is_array($value)) {
             return $this->replace($value);
         }
 
@@ -90,24 +102,17 @@ class Config extends ArrayObject
     }
 
     /**
-     * @param      $key
-     * @param null $value
-     * @return Config
-     */
-    public function setVariable($key, $value = null)
-    {
-        $this->variable->set($key, $value);
-
-        return $this;
-    }
-
-    /**
-     * @param $key
+     * @param $variable
      * @return string
      */
-    public function getVariable($key)
+    public function variable($variable)
     {
-        return $this->variable->find($key);
+        return preg_replace_callback(sprintf('/%s(\w*\.*\w*)%s/', static::GLUE, static::GLUE), function ($match) {
+            if (!$this->has($match[1])) {
+                throw new \Exception($match[1]);
+            }
+            return $this->variables[$match[1]];
+        }, $variable);
     }
 
     /**

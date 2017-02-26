@@ -1,8 +1,1 @@
-name: janhuang
-qq: %qq%
-demo:
-    name: janhuang
-    age: 18
-test:
-    test2:
-        name: janhuang
+foo: yml

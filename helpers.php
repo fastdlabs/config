@@ -23,6 +23,9 @@ function load($file)
         case "yml":
             $config = Yaml::parse(file_get_contents($file));
             break;
+        case 'json':
+            $config = json_decode(file_get_contents($file), true);
+            break;
         case 'php':
         default:
             $config = include $file;
