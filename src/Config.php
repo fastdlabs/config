@@ -56,7 +56,7 @@ class Config extends ArrayObject
     {
         if ('env' === substr($value, 0, 3)) {
             $env = substr($value, 4);
-            return env([$env]);
+            return env($env);
         }
 
         return $this->variable->replace($value);
