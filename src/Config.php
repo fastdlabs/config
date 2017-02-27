@@ -74,10 +74,10 @@ class Config extends ArrayObject
      * @param $default
      * @return mixed
      */
-    public function find($key, $default = null)
+    public function get($key, $default = null)
     {
         try {
-            $value = parent::find($key);
+            $value = $this->find($key);
         } catch (\Exception $exception) {
             return $default;
         }
@@ -120,6 +120,6 @@ class Config extends ArrayObject
      */
     public function all()
     {
-        return $this->getArrayCopy();
+        return (array) $this;
     }
 }
