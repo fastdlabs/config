@@ -120,6 +120,6 @@ class Config extends ArrayObject
      */
     public function all()
     {
-        return $this->data;
+        return $this->getArrayCopy();
     }
 }
