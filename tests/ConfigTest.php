@@ -36,6 +36,6 @@ class ConfigTest extends PHPUnit_Framework_TestCase
     public function testVariable()
     {
         $this->config->load(__DIR__ . '/config/variable.yml');
-        $this->assertEquals('bar', $this->config->find('name'));
+        $this->assertEquals('bar', $this->config->get('name'));
     }
 }
