@@ -78,27 +78,10 @@ class Config extends ArrayObject
     {
         try {
             $value = $this->find($key);
+            return is_string($value) ? $this->replace($value) : $value;
         } catch (\Exception $exception) {
             return $default;
         }
-
-        if (!is_array($value)) {
-            return $this->replace($value);
-        }
-
-        $replace = function ($bag) use (&$replace) {
-            foreach ($bag as $key => $value) {
-                if (is_array($value)) {
-                    $replace($value);
-                } else if (is_string($value)) {
-                    $bar[$key] = $this->replace($value);
-                }
-            }
-
-            return $bag;
-        };
-
-        return $replace($value);
     }
 
     /**
