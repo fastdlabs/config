@@ -84,6 +84,40 @@ class Config extends ArrayObject
         }
     }
 
+    public function has($key)
+    {
+        try {
+            $this->find($key);
+        } catch (\Exception $exception) {
+            return false;
+        }
+        return true;
+    }
+
+    public function set($key, $value)
+    {
+        if ($this->offsetExists($key)) {
+            return parent::set($key, $value);
+        }
+        $keys = explode('.', $key);
+        $firstDimension = array_shift($keys);
+
+        $data = [];
+        if ($this->offsetExists($firstDimension)) {
+            $data = $this->offsetGet($firstDimension);
+            !is_array($data) && $data = [$data];
+        }
+
+        $target = &$data;
+
+        foreach ($keys as $key) {
+            $target = &$target[$key];
+        }
+        $target = $value;
+
+        return parent::set($firstDimension, $data);
+    }
+
     /**
      * @param $variable
      * @return string
