@@ -10,6 +10,7 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * @param $file
+ *
  * @return array
  */
 function load($file)
@@ -17,10 +18,10 @@ function load($file)
     $extension = pathinfo($file, PATHINFO_EXTENSION);
 
     switch ($extension) {
-        case "ini":
-            $config = parse_ini_file($file, true);;
+        case 'ini':
+            $config = parse_ini_file($file, true);
             break;
-        case "yml":
+        case 'yml':
             $config = Yaml::parse(file_get_contents($file));
             break;
         case 'json':

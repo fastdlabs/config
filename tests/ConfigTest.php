@@ -6,7 +6,6 @@
  * @link      https://www.github.com/janhuang
  * @link      http://www.fast-d.cn/
  */
-
 use FastD\Config\Config;
 
 class ConfigTest extends PHPUnit_Framework_TestCase
@@ -19,23 +18,23 @@ class ConfigTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->config = new Config([], [
-            'name' => 'bar'
+            'name' => 'bar',
         ]);
     }
 
     public function testLoad()
     {
-        $this->config->load(__DIR__ . '/config/config.yml');
+        $this->config->load(__DIR__.'/config/config.yml');
 
         $this->assertEquals('yml', $this->config->find('foo'));
         $this->assertEquals([
-            'foo' => 'yml'
+            'foo' => 'yml',
         ], $this->config->all());
     }
 
     public function testVariable()
     {
-        $this->config->load(__DIR__ . '/config/variable.yml');
+        $this->config->load(__DIR__.'/config/variable.yml');
         $this->assertEquals('bar', $this->config->get('name'));
     }
 
@@ -47,7 +46,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
             'a' => [
                 'hello',
                 'b' => [
-                    'c' => 'world'
+                    'c' => 'world',
                 ],
             ],
         ], $this->config->all());
