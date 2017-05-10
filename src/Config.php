@@ -9,13 +9,10 @@
 
 namespace FastD\Config;
 
-
 use FastD\Utils\ArrayObject;
 
 /**
- * Class Config
- *
- * @package FastD\Config
+ * Class Config.
  */
 class Config extends ArrayObject
 {
@@ -28,6 +25,7 @@ class Config extends ArrayObject
 
     /**
      * Config constructor.
+     *
      * @param $config
      * @param array $variables
      */
@@ -40,6 +38,7 @@ class Config extends ArrayObject
 
     /**
      * @param $file
+     *
      * @return $this
      */
     public function load($file)
@@ -53,12 +52,14 @@ class Config extends ArrayObject
 
     /**
      * @param $value
+     *
      * @return string
      */
     protected function replace($value)
     {
         if ('env' === substr($value, 0, 3)) {
             $env = substr($value, 4);
+
             return env($env);
         }
 
@@ -72,12 +73,14 @@ class Config extends ArrayObject
     /**
      * @param $key
      * @param $default
+     *
      * @return mixed
      */
     public function get($key, $default = null)
     {
         try {
             $value = $this->find($key);
+
             return is_string($value) ? $this->replace($value) : $value;
         } catch (\Exception $exception) {
             return $default;
@@ -91,6 +94,7 @@ class Config extends ArrayObject
         } catch (\Exception $exception) {
             return false;
         }
+
         return true;
     }
 
@@ -120,6 +124,7 @@ class Config extends ArrayObject
 
     /**
      * @param $variable
+     *
      * @return string
      */
     protected function variable($variable)
@@ -128,6 +133,7 @@ class Config extends ArrayObject
             if (!$this->has($match[1])) {
                 throw new \Exception($match[1]);
             }
+
             return $this->variables[$match[1]];
         }, $variable);
     }
