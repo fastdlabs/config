@@ -73,7 +73,6 @@ class Config extends ArrayObject
      * @param $key
      * @param null $default
      * @return mixed|null|string
-     * @throws \ErrorException
      */
     public function get($key, $default = null)
     {
@@ -82,8 +81,6 @@ class Config extends ArrayObject
             return is_string($value) ? $this->replace($value) : $value;
         } catch (\Exception $exception) {
             return $default;
-        } finally {
-            throw new \ErrorException('Config error.');
         }
     }
 
