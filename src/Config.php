@@ -9,13 +9,10 @@
 
 namespace FastD\Config;
 
-
 use FastD\Utils\ArrayObject;
 
 /**
- * Class Config
- *
- * @package FastD\Config
+ * Class Config.
  */
 class Config extends ArrayObject
 {
@@ -28,6 +25,7 @@ class Config extends ArrayObject
 
     /**
      * Config constructor.
+     *
      * @param $config
      * @param array $variables
      */
@@ -40,6 +38,7 @@ class Config extends ArrayObject
 
     /**
      * @param $file
+     *
      * @return $this
      */
     public function load($file)
@@ -53,12 +52,14 @@ class Config extends ArrayObject
 
     /**
      * @param $value
+     *
      * @return string
      */
     protected function replace($value)
     {
         if ('env' === substr($value, 0, 3)) {
             $env = substr($value, 4);
+
             return env($env);
         }
 
@@ -71,29 +72,68 @@ class Config extends ArrayObject
 
     /**
      * @param $key
-     * @param null $default
-     * @return mixed|null|string
+     * @param $default
+     *
+     * @return mixed
      */
     public function get($key, $default = null)
     {
         try {
             $value = $this->find($key);
+
             return is_string($value) ? $this->replace($value) : $value;
         } catch (\Exception $exception) {
             return $default;
         }
     }
 
+    public function has($key)
+    {
+        try {
+            $this->find($key);
+        } catch (\Exception $exception) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function set($key, $value)
+    {
+        if ($this->offsetExists($key)) {
+            return parent::set($key, $value);
+        }
+        $keys = explode('.', $key);
+        $firstDimension = array_shift($keys);
+
+        $data = [];
+        if ($this->offsetExists($firstDimension)) {
+            $data = $this->offsetGet($firstDimension);
+            ! is_array($data) && $data = [$data];
+        }
+
+        $target = &$data;
+
+        foreach ($keys as $key) {
+            $target = &$target[$key];
+        }
+        $target = $value;
+
+        return parent::set($firstDimension, $data);
+    }
+
     /**
      * @param $variable
+     *
      * @return string
      */
     protected function variable($variable)
     {
         return preg_replace_callback(sprintf('/%s(\w*\.*\w*)%s/', static::GLUE, static::GLUE), function ($match) {
-            if (!$this->has($match[1])) {
+            if ( ! $this->has($match[1])) {
                 throw new \Exception($match[1]);
             }
+
             return $this->variables[$match[1]];
         }, $variable);
     }
@@ -103,6 +143,6 @@ class Config extends ArrayObject
      */
     public function all()
     {
-        return (array) $this;
+        return (array)$this;
     }
 }
