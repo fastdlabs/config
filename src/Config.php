@@ -1,10 +1,10 @@
 <?php
 /**
  * @author    jan huang <bboyjanhuang@gmail.com>
- * @copyright 2016
+ * @copyright 2018
  *
- * @link      https://www.github.com/janhuang
- * @link      http://www.fast-d.cn/
+ * @link      https://www.github.com/fastdlabs
+ * @link      https://fastdlabs.com/
  */
 
 namespace FastD\Config;
@@ -39,9 +39,9 @@ class Config extends ArrayObject
     /**
      * @param $file
      *
-     * @return $this
+     * @return array
      */
-    public function load($file)
+    public function load($file): array
     {
         $config = load($file);
 
@@ -87,7 +87,11 @@ class Config extends ArrayObject
         }
     }
 
-    public function has($key)
+    /**
+     * @param $key
+     * @return bool
+     */
+    public function has($key): bool
     {
         try {
             $this->find($key);
@@ -98,7 +102,12 @@ class Config extends ArrayObject
         return true;
     }
 
-    public function set($key, $value)
+    /**
+     * @param $key
+     * @param $value
+     * @return ArrayObject
+     */
+    public function set($key, $value): ArrayObject
     {
         if ($this->offsetExists($key)) {
             return parent::set($key, $value);
@@ -141,7 +150,7 @@ class Config extends ArrayObject
     /**
      * @return array
      */
-    public function all()
+    public function all(): array
     {
         return (array)$this;
     }
