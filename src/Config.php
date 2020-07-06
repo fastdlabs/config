@@ -9,19 +9,20 @@
 
 namespace FastD\Config;
 
-use FastD\Utils\ArrayObject;
+
+use ArrayObject;
 
 /**
  * Class Config.
  */
 class Config extends ArrayObject
 {
-    const GLUE = '%';
+    protected const GLUE = '%';
 
     /**
      * @var array
      */
-    protected $variables = [];
+    protected array $variables = [];
 
     /**
      * Config constructor.
@@ -41,11 +42,11 @@ class Config extends ArrayObject
      *
      * @return array
      */
-    public function load($file): array
+    public function load(string $file): array
     {
         $config = load($file);
 
-        $this->merge($config);
+        $this->append($config);
 
         return $config;
     }
@@ -55,7 +56,7 @@ class Config extends ArrayObject
      *
      * @return string
      */
-    protected function replace($value)
+    protected function replace(string $value): string
     {
         if ('env' === substr($value, 0, 3)) {
             $env = substr($value, 4);
@@ -71,21 +72,79 @@ class Config extends ArrayObject
     }
 
     /**
-     * @param $key
-     * @param $default
+     * @param string $key
+     * @param string $default
      *
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get($key, ?string $default = null)
     {
         try {
-            $value = $this->find($key);
-
+            $value = $this->offsetGet($key);
             return is_string($value) ? $this->replace($value) : $value;
         } catch (\Exception $exception) {
             return $default;
         }
     }
+
+    public function merge($array)
+    {
+        $merge = function ($array1, $array2) use (&$merge) {
+            foreach ($array2 as $key => $value) {
+                if (array_key_exists($key, $array1) && is_array($value)) {
+                    if (is_array($array1[$key])) {
+                        $array1[$key] = $merge($array1[$key], $value);
+                    } else {
+                        array_unshift($value, $array1[$key]);
+                        $array1[$key] = $value;
+                    }
+                } else {
+                    if (is_string($key)) {
+                        $array1[$key] = $value;
+                    } else {
+                        $array1[] = $value;
+                    }
+                }
+            }
+
+            return $array1;
+        };
+
+        $this->exchangeArray($merge($this->getArrayCopy(), $array));
+
+        unset($merge);
+
+        return $this;
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public function find($key)
+    {
+        if ($this->offsetExists($key)) {
+            return $this->offsetGet($key);
+        }
+
+        if (false === strpos($key, '.')) {
+            throw new \LogicException(sprintf('Array Undefined key %s', $key));
+        }
+
+        $value = $this->getArrayCopy();
+        $keys = explode('.', $key);
+        foreach ($keys as $name) {
+            if ( ! isset($value[$name])) {
+                throw new \LogicException(sprintf('Array Undefined key %s', $key));
+            }
+
+            $value = $value[$name];
+        }
+        unset($keys, $key);
+
+        return $value;
+    }
+
 
     /**
      * @param $key

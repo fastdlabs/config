@@ -9,11 +9,11 @@
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * @param $file
+ * @param string $file
  *
  * @return array
  */
-function load($file)
+function load(string $file): array
 {
     $extension = pathinfo($file, PATHINFO_EXTENSION);
 
