@@ -1,1 +1,4 @@
 foo: yml
+profile:
+    nickname: "janhuang"
+    age: 18

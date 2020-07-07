@@ -6,6 +6,8 @@
  * @link      https://www.github.com/janhuang
  * @link      http://www.fast-d.cn/
  */
+
+use FastD\Config\Config;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -33,4 +35,27 @@ function load(string $file): array
     }
 
     return $config;
+}
+
+/**
+ * @param $value
+ * @param array $variables
+ *
+ * @return string
+ */
+function replace(string $value, array $variables = []): string
+{
+    if ('env' === substr($value, 0, 3)) {
+        $env = substr($value, 4);
+        return getenv($env);
+    }
+
+    if (false === strpos($value, Config::GLUE)) {
+        return $value;
+    }
+
+    return preg_replace_callback(sprintf('/%s(\w*\.*\w*)%s/', Config::GLUE, Config::GLUE), function ($match) use ($variables) {
+        print_r($match);
+        return $variables[$match[1]];
+    }, $value);
 }
