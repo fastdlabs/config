@@ -59,7 +59,7 @@ class Config extends ArrayObject
      *
      * @return mixed
      */
-    public function get($key, string $default = '')
+    public function get($key, $default = '')
     {
         try {
             if ($this->offsetExists($key)) {
