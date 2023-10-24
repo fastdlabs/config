@@ -10,7 +10,7 @@
 
 ## Requirements
 
-* PHP >= 5.6
+* PHP >= 7.4
 
 ## Composer
 

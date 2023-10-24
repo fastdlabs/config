@@ -8,14 +8,14 @@
  */
 use FastD\Config\Config;
 
-class ConfigTest extends PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Config
      */
     protected $config;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->config = new Config([], [
             'name' => 'bar',

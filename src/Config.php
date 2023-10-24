@@ -21,7 +21,7 @@ class Config extends ArrayObject
     /**
      * @var array
      */
-    protected $variables = [];
+    protected array $variables = [];
 
     /**
      * Config constructor.
@@ -39,9 +39,9 @@ class Config extends ArrayObject
     /**
      * @param $file
      *
-     * @return $this
+     * @return array
      */
-    public function load($file)
+    public function load(string $file): array
     {
         $config = load($file);
 
@@ -55,7 +55,7 @@ class Config extends ArrayObject
      *
      * @return string
      */
-    protected function replace($value)
+    protected function replace($value): string
     {
         if ('env' === substr($value, 0, 3)) {
             $env = substr($value, 4);
@@ -71,7 +71,7 @@ class Config extends ArrayObject
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @param $default
      *
      * @return mixed
@@ -80,14 +80,13 @@ class Config extends ArrayObject
     {
         try {
             $value = $this->find($key);
-
             return is_string($value) ? $this->replace($value) : $value;
         } catch (\Exception $exception) {
             return $default;
         }
     }
 
-    public function has($key)
+    public function has($key): bool
     {
         try {
             $this->find($key);
@@ -98,7 +97,7 @@ class Config extends ArrayObject
         return true;
     }
 
-    public function set($key, $value)
+    public function set($key, $value): ArrayObject
     {
         if ($this->offsetExists($key)) {
             return parent::set($key, $value);
@@ -127,7 +126,7 @@ class Config extends ArrayObject
      *
      * @return string
      */
-    protected function variable($variable)
+    protected function variable(string $variable): string
     {
         return preg_replace_callback(sprintf('/%s(\w*\.*\w*)%s/', static::GLUE, static::GLUE), function ($match) {
             if ( ! $this->has($match[1])) {
@@ -141,7 +140,7 @@ class Config extends ArrayObject
     /**
      * @return array
      */
-    public function all()
+    public function all(): array
     {
         return (array)$this;
     }
