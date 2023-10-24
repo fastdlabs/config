@@ -26,51 +26,69 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     {
         $this->config->load(__DIR__.'/config/config.yml');
 
-        $this->assertEquals('yml', $this->config->find('foo'));
-        $this->assertEquals([
+        $config = $this->config->all();
+
+        $this->assertEquals($config, [
             'foo' => 'yml',
-        ], $this->config->all());
+            'profile' => [
+                'nickname' => 'janhuang',
+                'age' => 18,
+            ]
+        ]);
     }
 
-    public function testVariable()
+    public function testMerge()
     {
-        $this->config->load(__DIR__.'/config/variable.yml');
-        $this->assertEquals('bar', $this->config->get('name'));
-    }
+        $this->config->load(__DIR__.'/config/config.yml');
 
-    public function testSetConfig()
-    {
-        $this->config->set('a', 'hello');
-        $this->config->set('a.b.c', 'world');
-        $this->assertEquals([
-            'a' => [
-                'hello',
-                'b' => [
-                    'c' => 'world',
-                ],
-            ],
-        ], $this->config->all());
-        $this->config->set('a.b', 'world');
-        $this->assertEquals([
-            'a' => [
-                'hello',
-                'b' => 'world',
-            ],
-        ], $this->config->all());
-    }
+        $this->config->load(__DIR__ . '/config/config.ini');
 
-    public function testHasConfig()
-    {
-        $this->config->set('a', [
-            'b' => [
-                'c' => 'hello world',
+        $config = $this->config->all();
+
+        $this->assertEquals($config, [
+            'foo' => 'bar',
+            'profile' => [
+                'nickname' => 'janhuang',
+                'age' => 18,
             ],
         ]);
-        $this->assertSame(true, $this->config->has('a'));
-        $this->assertSame(true, $this->config->has('a.b'));
-        $this->assertSame(true, $this->config->has('a.b.c'));
-        $this->assertSame(false, $this->config->has('a.b.cd'));
-        $this->assertSame(false, $this->config->has('b'));
-        $this->assertSame(false, $this->config->has('b.c'));
+    }
+
+    public function testGet()
+    {
+        $this->config->load(__DIR__.'/config/config.yml');
+
+        $nickname = $this->config->get('profile.nickname');
+
+        $this->assertEquals('janhuang', $nickname);
+    }
+
+    public function testHas()
+    {
+        $this->config->load(__DIR__.'/config/config.yml');
+
+        $exists = $this->config->has('profile.nickname');
+        $notExists = $this->config->has('profile.gender');
+
+        $this->assertTrue($exists);
+        $this->assertNotTrue($notExists);
+    }
+
+    public function testSet()
+    {
+        $this->config->load(__DIR__.'/config/config.yml');
+
+        $this->config->set('marry', true);
+        $this->config->set('profile.marry', true);
+        $this->assertTrue($this->config->get('marry'));
+        $this->assertTrue($this->config->get('profile.marry'));
+    }
+
+    public function testVar()
+    {
+        $this->config->load(__DIR__.'/config/variable.yml');
+        $name = $this->config->get('name');
+
+        $this->assertEquals('bar', $name);
     }
 }

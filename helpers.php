@@ -6,18 +6,18 @@
  * @link      https://www.github.com/janhuang
  * @link      http://www.fast-d.cn/
  */
+
+use FastD\Config\Config;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * @param $file
+ * @param string $file
  *
  * @return array
  */
-function load($file)
+function load(string $file): array
 {
-    $extension = pathinfo($file, PATHINFO_EXTENSION);
-
-    switch ($extension) {
+    switch (pathinfo($file, PATHINFO_EXTENSION)) {
         case 'ini':
             $config = parse_ini_file($file, true);
             break;
