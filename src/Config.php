@@ -78,7 +78,7 @@ class Config extends ArrayObject
      */
     public function load(string $file): array
     {
-        $config = load($file);
+        $config = $this->replace(load($file));
 
         $this->add($config);
 
@@ -166,7 +166,7 @@ class Config extends ArrayObject
     {
         $config = array_replace_recursive($this->getArrayCopy(), $array);
 
-        $this->exchangeArray($this->replace($config));
+        $this->exchangeArray($config);
     }
 
     /**
