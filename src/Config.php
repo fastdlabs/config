@@ -13,8 +13,6 @@ namespace FastD\Config;
 
 use ArrayObject;
 use Exception;
-use LogicException;
-use Throwable;
 
 /**
  * Class Config.
