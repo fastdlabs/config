@@ -19,6 +19,9 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
     {
         $this->config = new Config([], [
             'name' => 'bar',
+            'user' => [
+                'school' => 'BeiDa'
+            ]
         ]);
     }
 
@@ -37,58 +40,78 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         ]);
     }
 
-    public function testMerge()
-    {
-        $this->config->load(__DIR__.'/config/config.yml');
+        public function testMerge()
+        {
+            $this->config->load(__DIR__.'/config/config.yml');
 
-        $this->config->load(__DIR__ . '/config/config.ini');
+            $this->config->load(__DIR__ . '/config/config.ini');
 
-        $config = $this->config->all();
+            $config = $this->config->all();
 
-        $this->assertEquals($config, [
-            'foo' => 'bar',
-            'profile' => [
-                'nickname' => 'janhuang',
-                'age' => 18,
-            ],
-        ]);
-    }
+            $this->assertEquals($config, [
+                'foo' => 'bar',
+                'profile' => [
+                    'nickname' => 'janhuang',
+                    'age' => 18,
+                ],
+            ]);
 
-    public function testGet()
-    {
-        $this->config->load(__DIR__.'/config/config.yml');
+            $this->config->add([
+                'profile' => [
+                    'school' => [
+                        'name' => 'BeiDa',
+                        'address' => 'BeiJing'
+                    ]
+                ]
+            ]);
+            $this->assertEquals([
+                'foo' => 'bar',
+                'profile' => [
+                    'nickname' => 'janhuang',
+                    'age' => 18,
+                    'school' => [
+                        'name' => 'BeiDa',
+                        'address' => 'BeiJing'
+                    ]
+                ],
+            ], $this->config->all());
+        }
 
-        $nickname = $this->config->get('profile.nickname');
+        public function testGet()
+        {
+            $this->config->load(__DIR__.'/config/config.yml');
 
-        $this->assertEquals('janhuang', $nickname);
-    }
+            $nickname = $this->config->get('profile.nickname');
 
-    public function testHas()
-    {
-        $this->config->load(__DIR__.'/config/config.yml');
+            $this->assertEquals('janhuang', $nickname);
+        }
 
-        $exists = $this->config->has('profile.nickname');
-        $notExists = $this->config->has('profile.gender');
+        public function testHas()
+        {
+            $this->config->load(__DIR__.'/config/config.yml');
 
-        $this->assertTrue($exists);
-        $this->assertNotTrue($notExists);
-    }
+            $exists = $this->config->has('profile.nickname');
+            $notExists = $this->config->has('profile.gender');
 
-    public function testSet()
-    {
-        $this->config->load(__DIR__.'/config/config.yml');
+            $this->assertTrue($exists);
+            $this->assertNotTrue($notExists);
+        }
 
-        $this->config->set('marry', true);
-        $this->config->set('profile.marry', true);
-        $this->assertTrue($this->config->get('marry'));
-        $this->assertTrue($this->config->get('profile.marry'));
-    }
+        public function testSet()
+        {
+            $this->config->load(__DIR__.'/config/config.yml');
 
-    public function testVar()
-    {
-        $this->config->load(__DIR__.'/config/variable.yml');
-        $name = $this->config->get('name');
+            $this->config->set('marry', true);
+            $this->config->set('profile.marry', true);
+            $this->assertTrue($this->config->get('marry'));
+            $this->assertTrue($this->config->get('profile.marry'));
+        }
 
-        $this->assertEquals('bar', $name);
-    }
+        public function testVar()
+        {
+            $this->config->load(__DIR__.'/config/variable.yml');
+
+            $this->assertEquals('bar', $this->config->get('name'));
+            $this->assertEquals('BeiDa', $this->config->get('school'));
+        }
 }

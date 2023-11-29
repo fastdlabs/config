@@ -12,6 +12,7 @@ namespace FastD\Config;
 
 
 use ArrayObject;
+use Exception;
 use LogicException;
 use Throwable;
 
@@ -30,53 +31,60 @@ class Config extends ArrayObject
     /**
      * Config constructor.
      *
-     * @param $config
+     * @param array $config
      * @param array $variables
+     * @throws Exception
      */
     public function __construct(array $config = [], array $variables = [])
     {
-        parent::__construct($config);
+        parent::__construct($this->replace($config));
 
         $this->variables = $variables;
     }
 
     /**
-     * @param $file
+     * @param $value
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    protected function replace($array)
+    {
+        array_walk_recursive($array, function (&$value) {
+            if (is_string($value)) {
+                $value = preg_replace_callback('/%([^%]+)%/', function ($matches) {
+                    $keys = explode('.', $matches[1]);
+                    $currentValue = $this->variables;
+
+                    foreach ($keys as $key) {
+                        if (isset($currentValue[$key])) {
+                            $currentValue = $currentValue[$key];
+                        } else {
+                            return $matches[0];
+                        }
+                    }
+
+                    return $currentValue;
+                }, $value);
+            }
+        });
+
+        return $array;
+    }
+
+    /**
+     * @param string $file
      *
      * @return array
+     * @throws Exception
      */
     public function load(string $file): array
     {
         $config = load($file);
 
-        $this->merge($config);
+        $this->add($config);
 
         return $config;
-    }
-
-    /**
-     * @param $value
-     *
-     * @return string
-     */
-    protected function replace($value): string
-    {
-        if ('env' === substr($value, 0, 3)) {
-            $env = substr($value, 4);
-            return getenv($env);
-        }
-
-        if (empty($value) || false === strpos($value, '%')) {
-            return $value;
-        }
-
-        return preg_replace_callback(sprintf('/%s(\w*\.*\w*)%s/', static::GLUE, static::GLUE), function ($match) {
-            if ( ! $this->has($match[1])) {
-                throw new \Exception($match[1]);
-            }
-
-            return $this->variables[$match[1]];
-        }, $value);
     }
 
     /**
@@ -85,32 +93,27 @@ class Config extends ArrayObject
      *
      * @return mixed
      */
-    public function get(string $key, $default = '')
+    public function get(string $key, $default = null)
     {
-        try {
-            if ($this->offsetExists($key)) {
-                $value = $this->offsetGet($key);
-                return is_string($value) ? $this->replace($value, $this->variables) : $value;
-            }
+        if ($this->offsetExists($key)) {
+            return $this->offsetGet($key);
+        }
 
-            if (false === strpos($key, '.')) {
-                throw new LogicException(sprintf('Array Undefined key %s', $key));
-            }
-
-            $value = $this->getArrayCopy();
-            $keys = explode('.', $key);
-            foreach ($keys as $name) {
-                if (!isset($value[$name])) {
-                    throw new LogicException(sprintf('Array Undefined key %s', $key));
-                }
-
-                $value = $value[$name];
-            }
-            unset($keys, $key);
-            return is_string($value) ? $this->replace($value, $this->variables) : $value;
-        } catch (Throwable $exception) {
+        if (false === strpos($key, '.')) {
             return $default;
         }
+
+        $value = $this->getArrayCopy();
+        $keys = explode('.', $key);
+        foreach ($keys as $name) {
+            if (!isset($value[$name])) {
+                return $default;
+            }
+
+            $value = $value[$name];
+        }
+        unset($keys, $key);
+        return $value;
     }
 
     public function has($key): bool
@@ -135,7 +138,7 @@ class Config extends ArrayObject
     {
         if ($this->offsetExists($key)) {
             $this->offsetSet($key, $value);
-            return ;
+            return;
         }
         $keys = explode('.', $key);
         $firstDimension = array_shift($keys);
@@ -143,7 +146,7 @@ class Config extends ArrayObject
         $data = [];
         if ($this->offsetExists($firstDimension)) {
             $data = $this->offsetGet($firstDimension);
-            ! is_array($data) && $data = [$data];
+            !is_array($data) && $data = [$data];
         }
 
         $target = &$data;
@@ -157,44 +160,22 @@ class Config extends ArrayObject
     }
 
     /**
+     * @param $array
+     * @return void
+     * @throws Exception
+     */
+    public function add($array): void
+    {
+        $config = array_replace_recursive($this->getArrayCopy(), $array);
+
+        $this->exchangeArray($this->replace($config));
+    }
+
+    /**
      * @return array
      */
     public function all(): array
     {
         return (array)$this;
-    }
-
-    /**
-     * @param $array
-     * @return $this
-     */
-    public function merge($array)
-    {
-        $merge = function ($array1, $array2) use (&$merge) {
-            foreach ($array2 as $key => $value) {
-                if (array_key_exists($key, $array1) && is_array($value)) {
-                    if (is_array($array1[$key])) {
-                        $array1[$key] = $merge($array1[$key], $value);
-                    } else {
-                        array_unshift($value, $array1[$key]);
-                        $array1[$key] = $value;
-                    }
-                } else {
-                    if (is_string($key)) {
-                        $array1[$key] = $value;
-                    } else {
-                        $array1[] = $value;
-                    }
-                }
-            }
-
-            return $array1;
-        };
-
-        $this->exchangeArray($merge($this->getArrayCopy(), $array));
-
-        unset($merge);
-
-        return $this;
     }
 }

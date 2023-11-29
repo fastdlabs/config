@@ -1,1 +1,2 @@
 name: "%name%"
+school: "%user.school%"
