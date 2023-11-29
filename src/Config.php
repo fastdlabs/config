@@ -19,8 +19,6 @@ use Exception;
  */
 class Config extends ArrayObject
 {
-    const GLUE = '%';
-
     /**
      * @var array
      */
@@ -41,12 +39,10 @@ class Config extends ArrayObject
     }
 
     /**
-     * @param $value
-     *
+     * @param $array
      * @return mixed
-     * @throws Exception
      */
-    protected function replace($array)
+    public function replace($array)
     {
         array_walk_recursive($array, function (&$value) {
             if (is_string($value)) {
