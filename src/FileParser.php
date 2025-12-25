@@ -7,9 +7,7 @@ use ArrayObject;
 use Exception;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * Class Config.
- */
+
 class FileParser
 {
     public const PARSE_RETURN = 0;
@@ -20,9 +18,6 @@ class FileParser
     {
     }
 
-    /**
-     * @throws Exception
-     */
     public function parse(string $file, int $flag = FileParser::PARSE_APPEND): Parsed
     {
         $config = match (pathinfo($file, PATHINFO_EXTENSION)) {
@@ -42,7 +37,6 @@ class FileParser
 
         return new Parsed($config);
     }
-
 
     private function replace(mixed $data, array $variables): mixed {
         return match (true) {

@@ -18,12 +18,12 @@ class Parsed extends \ArrayObject
         $value = $this->getArrayCopy();
         $keys = explode('.', $key);
 
-        foreach ($keys as $name) {
-            if (!isset($value[$name])) {
+        foreach ($keys as $key) {
+            if (!isset($value[$key])) {
                 return $default;
             }
 
-            $value = $value[$name];
+            $value = $value[$key];
         }
 
         return $value;
@@ -53,7 +53,7 @@ class Parsed extends \ArrayObject
 
         $target = $value;
 
-        parent::offsetGet($firstDimension, $data);
+        parent::offsetSet($firstDimension, $data);
     }
 
     public function has(string $key): bool
@@ -65,14 +65,55 @@ class Parsed extends \ArrayObject
         $value = $this->getArrayCopy();
         $keys = explode('.', $key);
 
-        foreach ($keys as $name) {
-            if (!isset($value[$name])) {
+        foreach ($keys as $key) {
+            if (!isset($value[$key])) {
                 return false;
             }
-            $value = $value[$name];
+            $value = $value[$key];
         }
 
         return true;
+    }
+
+    public function unset(string $key): void
+    {
+        if (!str_contains($key, '.')) {
+            parent::offsetUnset($key);
+            return;
+        }
+
+        $keys = explode('.', $key);
+        $firstDimension = array_shift($keys);
+
+        // 检查第一层是否存在
+        if (!parent::offsetExists($firstDimension)) {
+            return;
+        }
+
+        $data = parent::offsetGet($firstDimension);
+        if (!is_array($data)) {
+            parent::offsetUnset($firstDimension);
+            return;
+        }
+
+        $target = &$data;
+        $pathExists = true;
+
+        for ($i = 0; $i < count($keys) - 1; $i++) {
+            $segment = $keys[$i];
+            if (!isset($target[$segment]) || !is_array($target[$segment])) {
+                $pathExists = false;
+                break;
+            }
+            $target = &$target[$segment];
+        }
+
+        if ($pathExists) {
+            $lastSegment = $keys[count($keys) - 1];
+            unset($target[$lastSegment]);
+        }
+
+        parent::offsetSet($firstDimension, $data);
     }
 
     public function offsetGet($key): mixed
@@ -88,5 +129,10 @@ class Parsed extends \ArrayObject
     public function offsetExists($key): bool
     {
         return $this->has($key);
+    }
+
+    public function offsetUnset($key): void
+    {
+        $this->unset($key);
     }
 }
