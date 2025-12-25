@@ -21,9 +21,9 @@ composer require fastd/config
 ## Usage
 
 ```php
-use FastD\Config\Config;
+use FastD\Config\FileParser;
 
-$config = new Config(array $config, array $variables = []);
+$config = new FileParser(array $config, array $variables = []);
 
 $config->load($file);
 

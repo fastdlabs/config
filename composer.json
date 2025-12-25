@@ -10,12 +10,9 @@
             "email": "bboyjanhuang@gmail.com"
         }
     ],
-    "config": {
-        "bin-dir": "bin"
-    },
     "require": {
-        "php": "^7.4 || ^8.0",
-        "symfony/yaml": "^4.4",
+        "php": ">=8.2",
+        "symfony/yaml": "^8.0",
         "ext-json": "*"
     },
     "require-dev": {
@@ -24,9 +21,6 @@
     "autoload": {
         "psr-4": {
             "FastD\\Config\\": "src"
-        },
-        "files": [
-            "helpers.php"
-        ]
+        }
     }
 }
