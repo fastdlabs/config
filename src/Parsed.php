@@ -3,8 +3,32 @@ declare(strict_types=1);
 
 namespace FastD\Config;
 
-class Parsed extends \ArrayObject
+use ArrayObject;
+
+class Parsed extends ArrayObject
 {
+    public function merge(array $parsed): self
+    {
+        $merge = function ($original, $present) use (&$merge): array {
+            foreach ($present as $key => $value) {
+                if (array_key_exists($key, $original) && is_array($value)) {
+                    $original[$key] = is_array($original[$key]) ? $merge($original[$key], $value) : array_merge([$original[$key]], $value);
+                } elseif (is_string($key)) {
+                    $original[$key] = $value;
+                } else {
+                    $original[] = $value;
+                }
+            }
+            return $original;
+        };
+
+        $merged = $merge($this->getArrayCopy(), $parsed);
+
+        $this->exchangeArray($merged);
+
+         return $this;
+    }
+
     public function get(string $key, mixed $default = null): mixed
     {
         if (parent::offsetExists($key)) {
@@ -18,12 +42,11 @@ class Parsed extends \ArrayObject
         $value = $this->getArrayCopy();
         $keys = explode('.', $key);
 
-        foreach ($keys as $key) {
-            if (!isset($value[$key])) {
+        foreach ($keys as $k) {
+            $value = $value[$k] ?? null;
+            if ($value === null) {
                 return $default;
             }
-
-            $value = $value[$key];
         }
 
         return $value;

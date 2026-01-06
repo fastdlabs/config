@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace FastD\Config;
@@ -7,49 +8,50 @@ use ArrayObject;
 use Exception;
 use Symfony\Component\Yaml\Yaml;
 
-
 class FileParser
 {
     public const PARSE_RETURN = 0;
     public const PARSE_APPEND = 1;
-    private const GLUE = '%';
 
-    public function __construct(protected array $vars = [], protected Parsed $parseResult = new Parsed())
+    public Parsed $var;
+
+    public function __construct(array|string $vars = [], public Parsed $parsed = new Parsed())
     {
+        $this->var = new Parsed(is_string($vars) ? $this->load($vars) : $vars);
+    }
+
+    public function load(string $file): array
+    {
+        return match (pathinfo($file, PATHINFO_EXTENSION)) {
+            'ini'   => parse_ini_file($file, true),
+            'yml'   => Yaml::parseFile($file),
+            'json'  => json_decode(file_get_contents($file), true),
+            'php'   => include $file,
+            default => throw new Exception('Unsupported file type: '.$file),
+        };
     }
 
     public function parse(string $file, int $flag = FileParser::PARSE_APPEND): Parsed
     {
-        $config = match (pathinfo($file, PATHINFO_EXTENSION)) {
-            'ini' => parse_ini_file($file, true),
-            'yml' => Yaml::parseFile($file),
-            'json' => json_decode(file_get_contents($file), true),
-            'php' => include $file,
-            default => throw new Exception('Unsupported file type: '.$file),
+        $parsed = $this->replace($this->load($file));
+
+        return match ($flag) {
+            self::PARSE_RETURN => new Parsed($parsed),
+            // 按照 loading 的文件名进行 key 合并
+            default => $this->parsed->merge([pathinfo($file, PATHINFO_FILENAME) => $parsed])
         };
-
-        $config = $this->replace($config, $this->vars);
-
-        if ($flag === FileParser::PARSE_APPEND) {
-            $this->parseResult->exchangeArray($config);
-            return $this->parseResult;
-        }
-
-        return new Parsed($config);
     }
 
-    private function replace(mixed $data, array $variables): mixed {
+    protected function replace(mixed $data): mixed
+    {
         return match (true) {
             is_array($data) => array_map(
-                fn ($value) => $this->replace($value, $variables),
+                fn ($value) => $this->replace($value),
                 $data
             ),
             is_string($data) => preg_replace_callback(
-                '/%([^%]+)%/',
-                fn (array $matches) =>
-                (array_key_exists($matches[1], $variables) && $variables[$matches[1]] !== null)
-                    ? $variables[$matches[1]]
-                    : $matches[0],
+                '/%([a-zA-Z0-9._]+)%/',
+                fn($matches) => $this->var->get($matches[1], $matches[0]),
                 $data
             ),
             default => $data,

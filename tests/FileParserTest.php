@@ -24,7 +24,7 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
     public function testLoad()
     {
         $parsed = $this->parser->parse(__DIR__.'/config/config.yml');
-        $this->assertEquals('yml', $parsed->get('foo'));
+        $this->assertEquals('yml', $parsed->get('config.foo'));
     }
 
     public function testVar()
@@ -38,8 +38,8 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
         $parser = new FileParser($vars);
         $parsed = $parser->parse(__DIR__.'/config/variable.yml');
 
-        $this->assertEquals('FastD', $parsed->get('name'));
-        $this->assertEquals('Example University', $parsed->get('school'));
+        $this->assertEquals('FastD', $parsed->get('variable.name'));
+        $this->assertEquals('Example University', $parsed->get('variable.school'));
     }
 
     public function testVariableReplacementInNestedArray()
@@ -57,8 +57,10 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
             ],
             'debug' => '%app_debug%'
         ];
-        
+
+
         $tempFile = tempnam(sys_get_temp_dir(), 'config_test') . '.json';
+        $filename = pathinfo($tempFile, PATHINFO_FILENAME);
         file_put_contents($tempFile, json_encode($configContent));
         
         $vars = [
@@ -71,10 +73,10 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
         $parser = new FileParser($vars);
         $parsed = $parser->parse($tempFile);
         
-        $this->assertEquals('localhost', $parsed->get('database.host'));
-        $this->assertEquals(3306, $parsed->get('database.port'));
-        $this->assertEquals('127.0.0.1', $parsed->get('cache.host'));
-        $this->assertTrue((bool)$parsed->get('debug'));
+        $this->assertEquals('localhost', $parsed->get("{$filename}.database.host"));
+        $this->assertEquals(3306, $parsed->get("{$filename}.database.port"));
+        $this->assertEquals('127.0.0.1', $parsed->get("{$filename}.cache.host"));
+        $this->assertTrue((bool)$parsed->get("{$filename}.debug"));
 
         unlink($tempFile);
     }
@@ -89,6 +91,7 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
 
         $tempFile = tempnam(sys_get_temp_dir(), 'config_test') . '.json';
         file_put_contents($tempFile, json_encode($configContent));
+        $filename = pathinfo($tempFile, PATHINFO_FILENAME);
 
         $vars = [
             'name' => 'MyApp',
@@ -98,9 +101,9 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
         $parser = new FileParser($vars);
         $parsed = $parser->parse($tempFile);
 
-        $this->assertEquals('MyApp', $parsed->get('app_name'));
-        $this->assertEquals('1.0.0', $parsed->get('version'));
-        $this->assertEquals('This is MyApp application with version 1.0.0', $parsed->get('description'));
+        $this->assertEquals('MyApp', $parsed->get($filename . '.app_name'));
+        $this->assertEquals('1.0.0', $parsed->get($filename . '.version'));
+        $this->assertEquals('This is MyApp application with version 1.0.0', $parsed->get($filename . '.description'));
 
         unlink($tempFile);
     }
@@ -115,6 +118,7 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
 
         $tempFile = tempnam(sys_get_temp_dir(), 'config_test') . '.json';
         file_put_contents($tempFile, json_encode($configContent));
+        $filename = pathinfo($tempFile, PATHINFO_FILENAME);
 
         $vars = [
             'name' => 'Found'
@@ -123,9 +127,9 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
         $parser = new FileParser($vars);
         $parsed = $parser->parse($tempFile);
 
-        $this->assertEquals('Found', $parsed->get('existing_var'));
-        $this->assertEquals('%non_existing%', $parsed->get('non_existing_var'));
-        $this->assertEquals('Value is Found but %non_existing% is missing', $parsed->get('mixed_content'));
+        $this->assertEquals('Found', $parsed->get($filename . '.existing_var'));
+        $this->assertEquals('%non_existing%', $parsed->get($filename . '.non_existing_var'));
+        $this->assertEquals('Value is Found but %non_existing% is missing', $parsed->get($filename . '.mixed_content'));
 
         unlink($tempFile);
     }
@@ -135,7 +139,7 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
         $configContent = "app_name=%name%\ndb_host=%db_host%";
         $tempFile = tempnam(sys_get_temp_dir(), 'config_test') . '.ini';
         file_put_contents($tempFile, $configContent);
-
+        $filename = pathinfo($tempFile, PATHINFO_FILENAME);
         $vars = [
             'name' => 'TestApp',
             'db_host' => 'localhost'
@@ -144,8 +148,8 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
         $parser = new FileParser($vars);
         $parsed = $parser->parse($tempFile);
 
-        $this->assertEquals('TestApp', $parsed->get('app_name'));
-        $this->assertEquals('localhost', $parsed->get('db_host'));
+        $this->assertEquals('TestApp', $parsed->get($filename . '.app_name'));
+        $this->assertEquals('localhost', $parsed->get($filename . '.db_host'));
 
         unlink($tempFile);
     }
@@ -155,7 +159,7 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
         $configContent = "app_name: \"%name%\"\ndb:\n  host: \"%db_host%\"\n  port: \"%db_port%\"";
         $tempFile = tempnam(sys_get_temp_dir(), 'config_test') . '.yml';
         file_put_contents($tempFile, $configContent);
-
+        $filename = pathinfo($tempFile, PATHINFO_FILENAME);
         $vars = [
             'name' => 'YamlApp',
             'db_host' => 'yaml_host',
@@ -165,10 +169,10 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
         $parser = new FileParser($vars);
         $parsed = $parser->parse($tempFile);
 
-        $this->assertEquals('YamlApp', $parsed->get('app_name'));
-        $this->assertEquals('yaml_host', $parsed->get('db.host'));
-        $this->assertEquals(5432, $parsed->get('db.port'));
-        $this->assertEquals(5432, $parsed['db.port']);
+        $this->assertEquals('YamlApp', $parsed->get($filename . '.app_name'));
+        $this->assertEquals('yaml_host', $parsed->get($filename . '.db.host'));
+        $this->assertEquals(5432, $parsed->get($filename . '.db.port'));
+        $this->assertEquals(5432, $parsed[$filename . '.db.port']);
 
         unlink($tempFile);
     }
@@ -269,6 +273,7 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
 
         $tempFile = tempnam(sys_get_temp_dir(), 'config_test') . '.json';
         file_put_contents($tempFile, json_encode($configContent));
+        $filename = pathinfo($tempFile, PATHINFO_FILENAME);
 
         $vars = [
             'env' => 'production',
@@ -289,39 +294,39 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
         $parsed = $parser->parse($tempFile);
 
         // 验证整体结构
-        $this->assertTrue($parsed->has('app'));
-        $this->assertTrue($parsed->has('database'));
-        $this->assertTrue($parsed->has('cache'));
-        $this->assertTrue($parsed->has('services'));
+        $this->assertTrue($parsed->has($filename . '.app'));
+        $this->assertTrue($parsed->has($filename . '.database'));
+        $this->assertTrue($parsed->has($filename . '.cache'));
+        $this->assertTrue($parsed->has($filename . '.services'));
 
         // 验证应用配置
-        $this->assertEquals('MyApp', $parsed->get('app.name'));
-        $this->assertEquals('1.0.0', $parsed->get('app.version'));
-        $this->assertEquals('production', $parsed->get('app.env'));
-        $this->assertTrue($parsed->get('app.debug'));
+        $this->assertEquals('MyApp', $parsed->get($filename . '.app.name'));
+        $this->assertEquals('1.0.0', $parsed->get($filename . '.app.version'));
+        $this->assertEquals('production', $parsed->get($filename . '.app.env'));
+        $this->assertTrue($parsed->get($filename . '.app.debug'));
 
         // 验证数据库配置
-        $this->assertEquals('mysql', $parsed->get('database.driver'));
-        $this->assertEquals('localhost', $parsed->get('database.host'));
-        $this->assertEquals(3306, $parsed->get('database.port'));
-        $this->assertEquals('myapp', $parsed->get('database.database'));
-        $this->assertEquals('root', $parsed->get('database.username'));
-        $this->assertEquals('password', $parsed->get('database.password'));
-        $this->assertEquals('utf8', $parsed->get('database.options.charset'));
-        $this->assertEquals(30, $parsed->get('database.options.timeout'));
+        $this->assertEquals('mysql', $parsed->get($filename . '.database.driver'));
+        $this->assertEquals('localhost', $parsed->get($filename . '.database.host'));
+        $this->assertEquals(3306, $parsed->get($filename . '.database.port'));
+        $this->assertEquals('myapp', $parsed->get($filename . '.database.database'));
+        $this->assertEquals('root', $parsed->get($filename . '.database.username'));
+        $this->assertEquals('password', $parsed->get($filename . '.database.password'));
+        $this->assertEquals('utf8', $parsed->get($filename . '.database.options.charset'));
+        $this->assertEquals(30, $parsed->get($filename . '.database.options.timeout'));
 
         // 验证缓存配置
-        $this->assertEquals('redis', $parsed->get('cache.type'));
-        $this->assertEquals('127.0.0.1', $parsed->get('cache.host'));
-        $this->assertEquals(6379, $parsed->get('cache.port'));
+        $this->assertEquals('redis', $parsed->get($filename . '.cache.type'));
+        $this->assertEquals('127.0.0.1', $parsed->get($filename . '.cache.host'));
+        $this->assertEquals(6379, $parsed->get($filename . '.cache.port'));
 
         // 验证服务配置
-        $this->assertEquals('debug', $parsed->get('services.logger.level'));
-        $this->assertEquals('/var/log/app.log', $parsed->get('services.logger.path'));
-        $this->assertEquals('smtp.gmail.com', $parsed->get('services.mailer.host'));
-        $this->assertEquals(587, $parsed->get('services.mailer.port'));
-        $this->assertEquals('user@gmail.com', $parsed->get('services.mailer.username'));
-        $this->assertEquals('password', $parsed->get('services.mailer.password'));
+        $this->assertEquals('debug', $parsed->get($filename . '.services.logger.level'));
+        $this->assertEquals('/var/log/app.log', $parsed->get($filename . '.services.logger.path'));
+        $this->assertEquals('smtp.gmail.com', $parsed->get($filename . '.services.mailer.host'));
+        $this->assertEquals(587, $parsed->get($filename . '.services.mailer.port'));
+        $this->assertEquals('user@gmail.com', $parsed->get($filename . '.services.mailer.username'));
+        $this->assertEquals('password', $parsed->get($filename . '.services.mailer.password'));
 
         unlink($tempFile);
     }
@@ -436,7 +441,6 @@ class FileParserTest extends \PHPUnit\Framework\TestCase
 
         // 测试通过数组方式删除键
         unset($parsed['app.name']);
-        print_r($parsed);
         $this->assertFalse(isset($parsed['app.name']));
         $this->assertTrue(isset($parsed['app'])); // app 仍然存在，只是 name 被删除了
         $this->assertNull($parsed['app.name']);
