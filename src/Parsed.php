@@ -43,12 +43,11 @@ class Parsed extends ArrayObject
         $keys = explode('.', $key);
 
         foreach ($keys as $k) {
-            $value = $value[$k] ?? null;
-            if ($value === null) {
+            if (!array_key_exists($k, $value)) {
                 return $default;
             }
+            $value = $value[$k];
         }
-
         return $value;
     }
 
@@ -70,8 +69,8 @@ class Parsed extends ArrayObject
 
         $target = &$data;
 
-        foreach ($keys as $key) {
-            $target = &$target[$key];
+        foreach ($keys as $k) {
+            $target = &$target[$k];
         }
 
         $target = $value;
@@ -88,11 +87,11 @@ class Parsed extends ArrayObject
         $value = $this->getArrayCopy();
         $keys = explode('.', $key);
 
-        foreach ($keys as $key) {
-            if (!isset($value[$key])) {
+        foreach ($keys as $k) {
+            if (!is_array($value) || !array_key_exists($k, $value)) {
                 return false;
             }
-            $value = $value[$key];
+            $value = $value[$k];
         }
 
         return true;
