@@ -3,11 +3,11 @@
     "description": "config container",
     "license": "MIT",
     "type": "library",
-    "keywords": ["fastd", "config"],
+    "keywords": ["FastD", "config"],
     "authors": [
         {
             "name": "janhuang",
-            "email": "bboyjanhuang@gmail.com"
+            "email": "384099566@qq.com"
         }
     ],
     "require": {

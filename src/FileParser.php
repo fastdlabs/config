@@ -10,9 +10,6 @@ use Symfony\Component\Yaml\Yaml;
 
 class FileParser
 {
-    public const PARSE_RETURN = 0;
-    public const PARSE_APPEND = 1;
-
     public Parsed $var;
 
     public function __construct(array|string $vars = [], public Parsed $parsed = new Parsed())
@@ -31,15 +28,11 @@ class FileParser
         };
     }
 
-    public function parse(string $file, int $flag = FileParser::PARSE_APPEND): Parsed
+    public function parse(string $file): Parsed
     {
         $parsed = $this->replace($this->load($file));
 
-        return match ($flag) {
-            self::PARSE_RETURN => new Parsed($parsed),
-            // 按照 loading 的文件名进行 key 合并
-            default => $this->parsed->merge([pathinfo($file, PATHINFO_FILENAME) => $parsed])
-        };
+        return $this->parsed->merge([pathinfo($file, PATHINFO_FILENAME) => $parsed]);
     }
 
     protected function replace(mixed $data): mixed
