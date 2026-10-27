@@ -109,7 +109,7 @@ phpunit
 
 欢迎任何形式的贡献！您可以通过以下方式参与项目：
 
-- 🐛 [报告问题](https://github.com/JanHuang/container/issues)
+- 🐛 [报告问题](https://github.com/fastdlabs/config/issues)
 - 💡 提交功能建议
 - 🔧 贡献代码和文档
 - ⭐ Star项目支持

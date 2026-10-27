@@ -1,6 +1,6 @@
 {
     "name": "fastd/config",
-    "description": "config container",
+    "description": "Lightweight JSON, YAML, INI and PHP configuration parser for FastD.",
     "license": "MIT",
     "type": "library",
     "keywords": [
