@@ -2,7 +2,12 @@
          colors="true"
          bootstrap="vendor/autoload.php"
         >
-    <testsuites>
+    
+  <source>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </source><testsuites>
         <testsuite name="Config Testing">
             <directory>tests</directory>
         </testsuite>

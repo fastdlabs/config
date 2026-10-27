@@ -3,7 +3,10 @@
     "description": "config container",
     "license": "MIT",
     "type": "library",
-    "keywords": ["FastD", "config"],
+    "keywords": [
+        "FastD",
+        "config"
+    ],
     "authors": [
         {
             "name": "janhuang",
@@ -16,7 +19,8 @@
         "ext-json": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^10.0",
+        "phpstan/phpstan": "^1.12.24"
     },
     "autoload": {
         "psr-4": {
