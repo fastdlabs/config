@@ -1,6 +1,6 @@
 # FastD\Config - 轻量级 PHP 配置解析器
 
-[![Build Status](https://travis-ci.org/fastdlabs/config.svg?branch=master)](https://travis-ci.org/fastdlabs/config)
+[![CI](https://github.com/fastdlabs/config/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/fastdlabs/config/actions/workflows/ci.yml)
 [![Latest Stable Version](https://poser.pugx.org/fastd/config/v/stable)](https://packagist.org/packages/fastd/config) 
 [![Total Downloads](https://poser.pugx.org/fastd/config/downloads)](https://packagist.org/packages/fastd/config) 
 [![Latest Unstable Version](https://poser.pugx.org/fastd/config/v/unstable)](https://packagist.org/packages/fastd/config) 
